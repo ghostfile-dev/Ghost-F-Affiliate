@@ -73,6 +73,12 @@
             </div>
 
             <div class="flex items-center gap-2 flex-wrap">
+                <div class="flex items-center gap-1.5 rounded-xl bg-studio-850 border border-studio-700 px-2 py-1">
+                    <i data-lucide="key-round" class="w-3.5 h-3.5 text-amber-400 flex-shrink-0"></i>
+                    <input id="geminiApiKeyInput" type="password" autocomplete="off" placeholder="Gemini API Key..." class="bg-transparent text-[11px] text-zinc-200 placeholder:text-zinc-500 focus:outline-none w-28 sm:w-36" />
+                    <button id="btnSaveApiKey" type="button" class="px-2 py-0.5 rounded-lg text-[11px] font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition-colors cursor-pointer">Lưu</button>
+                </div>
+
                 <div class="flex items-center gap-1 rounded-xl bg-studio-850 border border-studio-700 p-1" id="languageSwitcher" aria-label="Language selector">
                     <button type="button" data-lang="vi" class="lang-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-indigo-600 text-white transition-colors cursor-pointer">VI</button>
                     <button type="button" data-lang="en" class="lang-btn px-2.5 py-1 rounded-lg text-[11px] font-medium text-zinc-300 hover:text-white transition-colors cursor-pointer">EN</button>
@@ -630,6 +636,8 @@
                 clearHistoryBtn: 'Xóa lịch sử',
                 toastInvalidImage: 'Vui lòng chọn tệp hình ảnh hợp lệ (JPG, PNG, WEBP).',
                 toastNeedImage: 'Vui lòng tải lên ít nhất 1 ảnh người mẫu trước.',
+                toastNeedApiKey: 'Vui lòng nhập Gemini API Key trước khi gọi AI (HTTP 403).',
+                toastKeySaved: 'Đã lưu Gemini API Key trên trình duyệt này.',
                 toastSwapped: 'Đã đảo vị trí 2 ảnh mẫu.',
                 toastCopied: 'Đã sao chép Prompt kỹ thuật!',
                 toastIdeaAdded: 'Đã thêm ý tưởng tối ưu bán hàng vào Prompt.',
@@ -748,6 +756,8 @@
                 clearHistoryBtn: 'Clear history',
                 toastInvalidImage: 'Please select a valid image file (JPG, PNG, WEBP).',
                 toastNeedImage: 'Please upload at least 1 model photo first.',
+                toastNeedApiKey: 'Please enter a Gemini API Key before calling AI (HTTP 403).',
+                toastKeySaved: 'Saved Gemini API Key in this browser.',
                 toastSwapped: 'Swapped the 2 sample photo slots.',
                 toastCopied: 'Copied technical prompt!',
                 toastIdeaAdded: 'Added sales layout idea to Prompt.',
@@ -866,6 +876,8 @@
                 clearHistoryBtn: '清空历史',
                 toastInvalidImage: '请选择有效的图片文件（JPG、PNG、WEBP）。',
                 toastNeedImage: '请先上传至少 1 张模特图片。',
+                toastNeedApiKey: '调用 AI 前请先填写 Gemini API Key（HTTP 403）。',
+                toastKeySaved: '已在本浏览器保存 Gemini API Key。',
                 toastSwapped: '已互换两张示例图片位置。',
                 toastCopied: '已复制技术提示词！',
                 toastIdeaAdded: '已将卖货构图建议加入提示词。',
@@ -984,6 +996,8 @@
                 clearHistoryBtn: 'Очистить историю',
                 toastInvalidImage: 'Выберите корректный файл изображения (JPG, PNG, WEBP).',
                 toastNeedImage: 'Сначала загрузите хотя бы 1 фото модели.',
+                toastNeedApiKey: 'Укажите Gemini API Key перед вызовом ИИ (HTTP 403).',
+                toastKeySaved: 'Gemini API Key сохранён в браузере.',
                 toastSwapped: 'Слоты примеров фото поменяны местами.',
                 toastCopied: 'Технический промпт скопирован!',
                 toastIdeaAdded: 'Идея для карточек добавлена в промпт.',
@@ -995,8 +1009,12 @@
             }
         };
 
+        const API_KEY_STORAGE_KEY = 'ghostf_gemini_api_key';
+
         const els = {
             toastContainer: document.getElementById('toastContainer'),
+            geminiApiKeyInput: document.getElementById('geminiApiKeyInput'),
+            btnSaveApiKey: document.getElementById('btnSaveApiKey'),
             langBtns: document.querySelectorAll('.lang-btn'),
             btnDemoSample: document.getElementById('btnDemoSample'),
             demoSampleText: document.getElementById('demoSampleText'),
@@ -1082,6 +1100,7 @@
 
         const state = {
             lang: 'vi',
+            apiKey: '',
             slots: {
                 1: { dataUrl: null, base64: null, mimeType: 'image/jpeg', name: '', role: 'Mặt trước (Front)' },
                 2: { dataUrl: null, base64: null, mimeType: 'image/jpeg', name: '', role: 'Mặt sau (Back)' }
@@ -1098,6 +1117,45 @@
             isZoomed: false,
             history: []
         };
+
+        function loadApiKeyFromStorage() {
+            try {
+                const saved = localStorage.getItem(API_KEY_STORAGE_KEY) || '';
+                state.apiKey = saved.trim();
+                if (els.geminiApiKeyInput) {
+                    els.geminiApiKeyInput.value = state.apiKey;
+                }
+            } catch {
+                // Ignore storage errors
+            }
+        }
+
+        function saveApiKeyToStorage(key) {
+            const cleaned = (key || '').trim();
+            state.apiKey = cleaned;
+            try {
+                if (cleaned) {
+                    localStorage.setItem(API_KEY_STORAGE_KEY, cleaned);
+                } else {
+                    localStorage.removeItem(API_KEY_STORAGE_KEY);
+                }
+            } catch {
+                // Ignore storage errors
+            }
+        }
+
+        function requireApiKey() {
+            const currentVal = (els.geminiApiKeyInput?.value || state.apiKey || '').trim();
+            if (currentVal && currentVal !== state.apiKey) {
+                saveApiKeyToStorage(currentVal);
+            }
+            if (!state.apiKey) {
+                showToast(t('toastNeedApiKey'), 'error');
+                els.geminiApiKeyInput?.focus();
+                return false;
+            }
+            return true;
+        }
 
         function t(key) {
             return I18N[state.lang]?.[key] ?? I18N.vi[key] ?? key;
@@ -1133,10 +1191,10 @@
             setTimeout(() => {
                 toast.classList.add('opacity-0');
                 setTimeout(() => toast.remove(), 250);
-            }, 3000);
+            }, 3500);
         }
 
-        async function fetchWithBackoff(url, payload, maxRetries = 3) {
+        async function fetchWithBackoff(url, payload, maxRetries = 2) {
             let delay = 1000;
             for (let attempt = 0; attempt <= maxRetries; attempt++) {
                 try {
@@ -1146,14 +1204,16 @@
                         body: JSON.stringify(payload)
                     });
                     if (!res.ok) {
-                        if (res.status >= 400 && res.status < 500 && res.status !== 429) {
+                        if (res.status === 403 || (res.status >= 400 && res.status < 500 && res.status !== 429)) {
                             throw new Error(`HTTP ${res.status}`);
                         }
                         throw new Error(`Retryable status ${res.status}`);
                     }
                     return await res.json();
                 } catch (err) {
-                    if (attempt === maxRetries) throw err;
+                    if (attempt === maxRetries || (err.message && err.message.includes('HTTP 403'))) {
+                        throw err;
+                    }
                     await new Promise(resolve => setTimeout(resolve, delay));
                     delay *= 2;
                 }
@@ -1244,6 +1304,9 @@
                 showToast(t('toastNeedImage'), 'error');
                 return;
             }
+            if (!requireApiKey()) {
+                return;
+            }
 
             inferHeuristicRoles();
             renderSlotsUI();
@@ -1252,8 +1315,7 @@
             els.scanBtnText.textContent = t('scanningBtn');
 
             try {
-                const apiKey = '';
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${encodeURIComponent(state.apiKey)}`;
 
                 const parts = [
                     {
@@ -1322,8 +1384,8 @@ Return strict JSON (no markdown fences) with this exact structure:
                 els.detectedCategoryBadge.textContent = `${t('catPrefix')} ${state.category}`;
                 els.detectedSidesBadge.textContent = `${t('sidesPrefix')} ${roleLabels}`;
                 syncFullPromptEditor();
-                if (showNotify) {
-                    showToast(t('toastNeedImage'), 'info');
+                if (showNotify || (err.message && err.message.includes('HTTP 403'))) {
+                    showToast(`Lỗi quét AI: ${err.message || 'Kiểm tra lại API Key'}`, 'error');
                 }
             } finally {
                 els.btnScanGarment.disabled = false;
@@ -1487,8 +1549,7 @@ Return strict JSON (no markdown fences) with this exact structure:
                 });
             });
 
-            const apiKey = '';
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent?key=${apiKey}`;
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent?key=${encodeURIComponent(state.apiKey)}`;
 
             const responseJson = await fetchWithBackoff(url, {
                 contents: [{ role: 'user', parts }],
@@ -1509,6 +1570,9 @@ Return strict JSON (no markdown fences) with this exact structure:
             const hasAnySlot = Boolean(state.slots[1].dataUrl || state.slots[2].dataUrl);
             if (!hasAnySlot) {
                 showToast(t('toastNeedImage'), 'error');
+                return;
+            }
+            if (!requireApiKey()) {
                 return;
             }
 
@@ -1535,6 +1599,9 @@ Return strict JSON (no markdown fences) with this exact structure:
             const hasAnySlot = Boolean(state.slots[1].dataUrl || state.slots[2].dataUrl);
             if (!hasAnySlot) {
                 showToast(t('toastNeedImage'), 'error');
+                return;
+            }
+            if (!requireApiKey()) {
                 return;
             }
 
@@ -1905,6 +1972,14 @@ Return strict JSON (no markdown fences) with this exact structure:
         }
 
         // Bind events
+        els.btnSaveApiKey?.addEventListener('click', () => {
+            saveApiKeyToStorage(els.geminiApiKeyInput?.value || '');
+            showToast(t('toastKeySaved'), 'success');
+        });
+        els.geminiApiKeyInput?.addEventListener('change', () => {
+            saveApiKeyToStorage(els.geminiApiKeyInput?.value || '');
+        });
+
         els.langBtns.forEach(btn => {
             btn.addEventListener('click', () => applyLanguage(btn.dataset.lang));
         });
@@ -2166,6 +2241,7 @@ Return strict JSON (no markdown fences) with this exact structure:
         });
 
         // Khởi tạo ban đầu
+        loadApiKeyFromStorage();
         applyLanguage('vi');
         syncFullPromptEditor(true);
         renderResultStage();
