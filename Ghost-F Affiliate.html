@@ -1,0 +1,2176 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ghost-F AI - TikTok Affiliate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    },
+                    colors: {
+                        studio: {
+                            950: '#090b10',
+                            900: '#0f131c',
+                            850: '#151a26',
+                            800: '#1b2232',
+                            700: '#273147'
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: #090b10;
+            color: #f4f4f5;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(15, 19, 28, 0.5);
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #2c374f;
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #3e4d6e;
+        }
+    </style>
+</head>
+<body class="bg-studio-950 text-zinc-100 min-h-screen flex flex-col selection:bg-indigo-500/30 selection:text-indigo-200">
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-3 sm:px-0"></div>
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-30 bg-studio-900/95 backdrop-blur-md border-b border-studio-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-violet-600 to-fuchsia-600 flex items-center justify-center shadow-lg shadow-indigo-950/60 flex-shrink-0">
+                    <i data-lucide="shirt" class="w-5 h-5 text-white"></i>
+                </div>
+                <div class="min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <h1 class="text-base sm:text-lg font-bold tracking-tight text-white truncate">Ghost-F AI</h1>
+                        <span class="px-2 py-0.5 text-[11px] font-semibold rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">TikTok Affiliate</span>
+                    </div>
+                    <p class="text-xs text-zinc-400 truncate">Tách trang phục từ người mẫu &amp; Tái tạo bối cảnh Studio tự động</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 flex-wrap">
+                <div class="flex items-center gap-1 rounded-xl bg-studio-850 border border-studio-700 p-1" id="languageSwitcher" aria-label="Language selector">
+                    <button type="button" data-lang="vi" class="lang-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-indigo-600 text-white transition-colors cursor-pointer">VI</button>
+                    <button type="button" data-lang="en" class="lang-btn px-2.5 py-1 rounded-lg text-[11px] font-medium text-zinc-300 hover:text-white transition-colors cursor-pointer">EN</button>
+                    <button type="button" data-lang="zh" class="lang-btn px-2.5 py-1 rounded-lg text-[11px] font-medium text-zinc-300 hover:text-white transition-colors cursor-pointer">中文</button>
+                    <button type="button" data-lang="ru" class="lang-btn px-2.5 py-1 rounded-lg text-[11px] font-medium text-zinc-300 hover:text-white transition-colors cursor-pointer">RU</button>
+                </div>
+
+                <button id="btnDemoSample" type="button" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/35 transition-all cursor-pointer">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                    <span id="demoSampleText">Dùng thử ảnh mẫu</span>
+                </button>
+
+                <button id="btnResetAll" type="button" title="Đặt lại toàn bộ" class="p-2 rounded-xl bg-studio-850 hover:bg-studio-800 text-zinc-300 hover:text-white border border-studio-700 transition-colors cursor-pointer">
+                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Studio Workspace -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Left Column: Input & Controls -->
+        <div class="lg:col-span-6 flex flex-col gap-5">
+            <!-- Section 1: Upload 2 Model Photos & Garment Vision -->
+            <section class="rounded-2xl bg-studio-900 border border-studio-800 p-4 sm:p-5 shadow-xl">
+                <div class="flex items-center justify-between gap-2 mb-4">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-6 h-6 rounded-full bg-indigo-600 text-white text-xs font-bold flex items-center justify-center">1</span>
+                        <h2 class="text-sm sm:text-base font-bold text-white">Ảnh người mẫu đang mặc</h2>
+                    </div>
+                    <button id="btnSwapSides" type="button" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-studio-850 hover:bg-studio-800 text-zinc-200 border border-studio-700 transition-colors cursor-pointer">
+                        <i data-lucide="arrow-left-right" class="w-3.5 h-3.5 text-indigo-400"></i>
+                        <span>Đảo vị trí</span>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-4">
+                    <!-- Slot 1 -->
+                    <div class="rounded-xl bg-studio-850/90 border border-dashed border-studio-700 hover:border-indigo-500/60 transition-colors p-3 flex flex-col justify-between min-h-[190px]">
+                        <input id="fileInput1" type="file" accept="image/jpeg,image/png,image/webp" class="hidden" />
+                        <div id="slotEmpty1" onclick="document.getElementById('fileInput1').click()" class="flex-1 flex flex-col items-center justify-center text-center py-4 cursor-pointer">
+                            <div class="w-10 h-10 rounded-full bg-indigo-500/15 text-indigo-400 flex items-center justify-center mb-2">
+                                <i data-lucide="upload-cloud" class="w-5 h-5"></i>
+                            </div>
+                            <span class="text-xs font-semibold text-zinc-200">Ảnh mẫu #1</span>
+                            <span class="text-[11px] text-zinc-400 mt-0.5">Mặt trước / Mặt sau</span>
+                        </div>
+                        <div id="slotPreview1" class="hidden flex-1 flex flex-col justify-between gap-2">
+                            <div class="relative rounded-lg overflow-hidden bg-studio-950 aspect-[3/4] max-h-44 mx-auto w-full">
+                                <img id="imgPreview1" src="" alt="Preview 1" class="w-full h-full object-contain" />
+                                <span id="badgeRole1" class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-indigo-600/90 text-white shadow"></span>
+                                <button id="btnRemove1" type="button" class="absolute top-2 right-2 p-1.5 rounded-lg bg-zinc-950/80 hover:bg-rose-600 text-zinc-200 hover:text-white transition-colors cursor-pointer">
+                                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+                            <div class="flex items-center justify-between gap-2 text-[11px] text-zinc-400">
+                                <span id="fileName1" class="truncate"></span>
+                                <button type="button" onclick="document.getElementById('fileInput1').click()" class="text-indigo-400 hover:text-indigo-300 font-medium flex-shrink-0 cursor-pointer">Đổi</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slot 2 -->
+                    <div class="rounded-xl bg-studio-850/90 border border-dashed border-studio-700 hover:border-indigo-500/60 transition-colors p-3 flex flex-col justify-between min-h-[190px]">
+                        <input id="fileInput2" type="file" accept="image/jpeg,image/png,image/webp" class="hidden" />
+                        <div id="slotEmpty2" onclick="document.getElementById('fileInput2').click()" class="flex-1 flex flex-col items-center justify-center text-center py-4 cursor-pointer">
+                            <div class="w-10 h-10 rounded-full bg-violet-500/15 text-violet-400 flex items-center justify-center mb-2">
+                                <i data-lucide="image-plus" class="w-5 h-5"></i>
+                            </div>
+                            <span class="text-xs font-semibold text-zinc-200">Ảnh mẫu #2</span>
+                            <span class="text-[11px] text-zinc-400 mt-0.5">Mặt còn lại (tùy chọn)</span>
+                        </div>
+                        <div id="slotPreview2" class="hidden flex-1 flex flex-col justify-between gap-2">
+                            <div class="relative rounded-lg overflow-hidden bg-studio-950 aspect-[3/4] max-h-44 mx-auto w-full">
+                                <img id="imgPreview2" src="" alt="Preview 2" class="w-full h-full object-contain" />
+                                <span id="badgeRole2" class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-violet-600/90 text-white shadow"></span>
+                                <button id="btnRemove2" type="button" class="absolute top-2 right-2 p-1.5 rounded-lg bg-zinc-950/80 hover:bg-rose-600 text-zinc-200 hover:text-white transition-colors cursor-pointer">
+                                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+                            <div class="flex items-center justify-between gap-2 text-[11px] text-zinc-400">
+                                <span id="fileName2" class="truncate"></span>
+                                <button type="button" onclick="document.getElementById('fileInput2').click()" class="text-indigo-400 hover:text-indigo-300 font-medium flex-shrink-0 cursor-pointer">Đổi</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fidelity Lock Toggle -->
+                <div class="rounded-xl bg-emerald-500/10 border border-emerald-500/25 p-3 mb-3.5 flex items-center justify-between gap-3">
+                    <div class="flex items-start gap-2.5">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0"></i>
+                        <div>
+                            <span class="text-xs font-bold text-emerald-300 block">Khóa 100% Chi Tiết Gốc</span>
+                            <p class="text-[11px] text-zinc-300/80">Giữ nguyên từng logo, chữ in, sọc viền, chất liệu &amp; màu sắc</p>
+                        </div>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
+                        <input id="fidelityLockToggle" type="checkbox" checked class="sr-only peer" />
+                        <div class="w-10 h-5 bg-studio-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+                    </label>
+                </div>
+
+                <!-- Garment Detail Map (AI Vision) -->
+                <div class="rounded-xl bg-studio-850 border border-studio-700/80 p-3.5">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                        <span class="text-xs font-semibold text-zinc-200 flex items-center gap-1.5">
+                            <i data-lucide="scan-search" class="w-3.5 h-3.5 text-indigo-400"></i>
+                            Bản đồ chi tiết trang phục (AI Vision)
+                        </span>
+                        <button id="btnScanGarment" type="button" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-indigo-600/20 hover:bg-indigo-600/35 text-indigo-300 border border-indigo-500/30 transition-colors cursor-pointer">
+                            <i data-lucide="sparkles" class="w-3 h-3"></i>
+                            <span id="scanBtnText">Quét chi tiết đồ</span>
+                        </button>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-1.5 mb-2.5 text-[11px]">
+                        <span id="detectedCategoryBadge" class="px-2 py-0.5 rounded-md bg-studio-900 text-zinc-300 border border-studio-700">Loại đồ: Tự nhận diện (Áo / Quần / Áo khoác)</span>
+                        <span id="detectedSidesBadge" class="px-2 py-0.5 rounded-md bg-studio-900 text-zinc-300 border border-studio-700">Mặt: Chờ phân tích</span>
+                    </div>
+                    <textarea id="garmentDetailsMap" rows="2" placeholder="AI sẽ tự nhận diện: Loại đồ (Áo / Quần / Áo khoác), mặt trước & mặt sau, logo, đường sọc, cúc/khóa kéo, chất liệu vải..." class="w-full rounded-lg bg-studio-950 border border-studio-700 focus:border-indigo-500 focus:outline-none p-2.5 text-xs text-zinc-200 placeholder:text-zinc-500 resize-y custom-scrollbar"></textarea>
+                </div>
+            </section>
+
+            <!-- Section 2: Studio Scene Presets & Custom Prompt -->
+            <section class="rounded-2xl bg-studio-900 border border-studio-800 p-4 sm:p-5 shadow-xl">
+                <div class="flex items-center justify-between gap-2 mb-4">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-6 h-6 rounded-full bg-indigo-600 text-white text-xs font-bold flex items-center justify-center">2</span>
+                        <h2 class="text-sm sm:text-base font-bold text-white">Chọn bối cảnh Studio</h2>
+                    </div>
+                    <span class="text-[11px] text-zinc-400">Chuẩn ảnh mẫu e-commerce</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-4">
+                    <button type="button" data-preset="hanger" class="preset-card text-left rounded-xl p-3 bg-indigo-600/15 border-2 border-indigo-500 transition-all cursor-pointer">
+                        <div class="flex items-center justify-between gap-2 mb-1">
+                            <span class="text-xs font-bold text-white">Treo trên móc (Studio Rack)</span>
+                            <span class="preset-badge px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-500/25 text-indigo-200">Chuẩn mẫu 1</span>
+                        </div>
+                        <p class="text-[11px] text-zinc-300/85 leading-relaxed">Treo ngay ngắn trên móc gỗ / móc kẹp quần trên giá treo tối giản, tường sáng có tranh khung &amp; cây xanh.</p>
+                    </button>
+
+                    <button type="button" data-preset="flatlay" class="preset-card text-left rounded-xl p-3 bg-studio-850 border border-studio-700 hover:border-studio-600 transition-all cursor-pointer">
+                        <div class="flex items-center justify-between gap-2 mb-1">
+                            <span class="text-xs font-bold text-white">Trải phẳng dưới sàn (Flat-lay)</span>
+                            <span class="preset-badge px-2 py-0.5 rounded-full text-[10px] font-semibold bg-studio-900 text-zinc-300">Chuẩn mẫu 2</span>
+                        </div>
+                        <p class="text-[11px] text-zinc-400 leading-relaxed">Góc chụp từ trên xuống 90°, trải phẳng trên thảm lông tròn màu kem nền sàn gỗ với ánh nắng xiên nhẹ.</p>
+                    </button>
+
+                    <button type="button" data-preset="pure_white" class="preset-card text-left rounded-xl p-3 bg-studio-850 border border-studio-700 hover:border-studio-600 transition-all cursor-pointer">
+                        <div class="flex items-center justify-between gap-2 mb-1">
+                            <span class="text-xs font-bold text-white">Nền trắng tinh #FFFFFF (TMĐT)</span>
+                            <span class="preset-badge px-2 py-0.5 rounded-full text-[10px] font-semibold bg-studio-900 text-zinc-300">Shopee / Lazada</span>
+                        </div>
+                        <p class="text-[11px] text-zinc-400 leading-relaxed">Nền trắng tinh #FFFFFF thuần khiết, không đạo cụ, không thảm hay tranh trang trí, tối ưu làm ảnh bìa chính.</p>
+                    </button>
+
+                    <button type="button" data-preset="custom" class="preset-card text-left rounded-xl p-3 bg-studio-850 border border-studio-700 hover:border-studio-600 transition-all cursor-pointer">
+                        <div class="flex items-center justify-between gap-2 mb-1">
+                            <span class="text-xs font-bold text-white">Bối cảnh tự do (100% Prompt)</span>
+                            <span class="preset-badge px-2 py-0.5 rounded-full text-[10px] font-semibold bg-studio-900 text-zinc-300">Tự do</span>
+                        </div>
+                        <p class="text-[11px] text-zinc-400 leading-relaxed">Tự mô tả hoàn toàn phông nền, ánh sáng, đạo cụ theo phong cách riêng của shop.</p>
+                    </button>
+                </div>
+
+                <!-- View Mode -->
+                <div class="mb-4">
+                    <div class="text-xs font-semibold text-zinc-300 mb-2">Góc hiển thị sản phẩm</div>
+                    <div id="viewModeGroup" class="grid grid-cols-3 gap-2">
+                        <button type="button" data-viewmode="both" class="viewmode-btn px-2.5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white transition-colors cursor-pointer">Cả 2 mặt (Trước &amp; Sau)</button>
+                        <button type="button" data-viewmode="front" class="viewmode-btn px-2.5 py-2 rounded-xl text-xs font-medium bg-studio-850 text-zinc-300 border border-studio-700 hover:text-white transition-colors cursor-pointer">Chỉ mặt trước</button>
+                        <button type="button" data-viewmode="back" class="viewmode-btn px-2.5 py-2 rounded-xl text-xs font-medium bg-studio-850 text-zinc-300 border border-studio-700 hover:text-white transition-colors cursor-pointer">Chỉ mặt sau</button>
+                    </div>
+                </div>
+
+                <!-- Custom Prompt Box -->
+                <div class="mb-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                        <label for="userCustomPrompt" class="text-xs font-semibold text-zinc-200">
+                            <span>Nhập Prompt Tùy Chỉnh (Theo ý muốn)</span>
+                        </label>
+                        <select id="promptBlendMode" class="rounded-lg bg-studio-850 border border-studio-700 text-[11px] text-zinc-200 px-2 py-1 focus:outline-none focus:border-indigo-500">
+                            <option value="blend">Kết hợp với bối cảnh đang chọn</option>
+                            <option value="override">Dùng 100% Prompt tự do của tôi</option>
+                        </select>
+                    </div>
+                    <div class="relative">
+                        <textarea id="userCustomPrompt" rows="2" placeholder="Nhập mô tả bối cảnh, ánh sáng, cách bày áo/quần/áo khoác theo ý bạn..." class="w-full rounded-xl bg-studio-950 border border-studio-700 focus:border-indigo-500 focus:outline-none p-3 pr-8 text-xs text-zinc-100 placeholder:text-zinc-500 resize-y custom-scrollbar"></textarea>
+                        <button id="btnClearPrompt" type="button" class="hidden absolute top-2.5 right-2.5 p-1 rounded-md text-zinc-400 hover:text-white hover:bg-studio-800 cursor-pointer">
+                            <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+
+                    <div id="promptQuickChips" class="flex flex-wrap gap-1.5 mt-2">
+                        <button type="button" data-snippet="Light concrete surface with subtle minimal fashion accessories" class="chip-btn px-2.5 py-1 rounded-lg text-[11px] bg-studio-850 hover:bg-studio-800 text-zinc-300 border border-studio-700 transition-colors cursor-pointer">+ Nền bê tông &amp; phụ kiện</button>
+                        <button type="button" data-snippet="Two wooden hangers side by side on the studio rack showing front and back" class="chip-btn px-2.5 py-1 rounded-lg text-[11px] bg-studio-850 hover:bg-studio-800 text-zinc-300 border border-studio-700 transition-colors cursor-pointer">+ Treo 2 mặt cạnh nhau</button>
+                        <button type="button" data-snippet="Front and back views laid flat side by side neatly on the rug" class="chip-btn px-2.5 py-1 rounded-lg text-[11px] bg-studio-850 hover:bg-studio-800 text-zinc-300 border border-studio-700 transition-colors cursor-pointer">+ Trải 2 mặt song song</button>
+                        <button type="button" data-snippet="Ultra-crisp commercial product photography with razor-sharp logos and stitching" class="chip-btn px-2.5 py-1 rounded-lg text-[11px] bg-studio-850 hover:bg-studio-800 text-zinc-300 border border-studio-700 transition-colors cursor-pointer">+ Siêu nét chi tiết gốc</button>
+                    </div>
+                </div>
+
+                <!-- Full Technical Prompt Accordion -->
+                <div class="rounded-xl bg-studio-850/70 border border-studio-800 p-3 mb-4">
+                    <button id="btnToggleFullPrompt" type="button" class="w-full flex items-center justify-between text-xs font-semibold text-zinc-300 hover:text-white cursor-pointer">
+                        <span>Xem &amp; Chỉnh sửa Prompt kỹ thuật đầy đủ</span>
+                        <i id="chevronFullPrompt" data-lucide="chevron-down" class="w-4 h-4 transition-transform"></i>
+                    </button>
+                    <div id="fullPromptPanel" class="hidden mt-3 pt-3 border-t border-studio-700/80 space-y-2.5">
+                        <div class="flex items-center justify-between gap-2">
+                            <label class="inline-flex items-center gap-2 text-[11px] text-zinc-300 cursor-pointer">
+                                <input id="useManualFullPrompt" type="checkbox" class="rounded bg-studio-950 border-studio-700 text-indigo-600 focus:ring-0" />
+                                <span>Chỉnh sửa trực tiếp câu lệnh gửi AI</span>
+                            </label>
+                            <button id="btnSyncFullPrompt" type="button" class="text-[11px] text-indigo-400 hover:text-indigo-300 font-medium cursor-pointer">Đồng bộ lại tự động</button>
+                        </div>
+                        <textarea id="fullPromptEditor" rows="4" class="w-full rounded-lg bg-studio-950 border border-studio-700 focus:border-indigo-500 focus:outline-none p-2.5 text-[11px] font-mono text-zinc-300 resize-y custom-scrollbar"></textarea>
+                    </div>
+                </div>
+
+                <!-- Aspect Ratio -->
+                <div class="mb-5">
+                    <div class="flex items-center justify-between gap-2 mb-2">
+                        <span class="text-xs font-semibold text-zinc-300">Tỷ lệ khung hình</span>
+                        <span id="ratioHint" class="text-[11px] text-zinc-400">Chuẩn TikTok Shop / Reels</span>
+                    </div>
+                    <div id="aspectRatioGroup" class="grid grid-cols-4 gap-2">
+                        <button type="button" data-ratio="9:16" class="ratio-btn py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white transition-colors cursor-pointer">9:16</button>
+                        <button type="button" data-ratio="3:4" class="ratio-btn py-2 rounded-xl text-xs font-medium bg-studio-850 text-zinc-300 border border-studio-700 hover:text-white transition-colors cursor-pointer">3:4</button>
+                        <button type="button" data-ratio="4:5" class="ratio-btn py-2 rounded-xl text-xs font-medium bg-studio-850 text-zinc-300 border border-studio-700 hover:text-white transition-colors cursor-pointer">4:5</button>
+                        <button type="button" data-ratio="1:1" class="ratio-btn py-2 rounded-xl text-xs font-medium bg-studio-850 text-zinc-300 border border-studio-700 hover:text-white transition-colors cursor-pointer">1:1</button>
+                    </div>
+                </div>
+
+                <!-- Primary Generate CTA -->
+                <button id="btnGenerate" type="button" class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 hover:from-indigo-500 hover:via-violet-500 hover:to-fuchsia-500 text-white font-bold text-sm shadow-lg shadow-indigo-950/70 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
+                    <i data-lucide="wand-2" class="w-4 h-4"></i>
+                    <span id="btnGenerateText">Tạo Ảnh Sản Phẩm Studio</span>
+                </button>
+            </section>
+        </div>
+
+        <!-- Right Column: Result Preview, Video Studio & History -->
+        <div class="lg:col-span-6 flex flex-col gap-5">
+            <section class="rounded-2xl bg-studio-900 border border-studio-800 p-4 sm:p-5 shadow-xl">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                        <h2 class="text-sm sm:text-base font-bold text-white">Kết quả Studio AI</h2>
+                    </div>
+
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <button id="btnToggleZoom" type="button" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-studio-850 hover:bg-studio-800 text-zinc-200 border border-studio-700 transition-colors cursor-pointer">
+                            <i data-lucide="zoom-in" class="w-3.5 h-3.5 text-indigo-400"></i>
+                            <span id="zoomBtnText">Soi nét 2x</span>
+                        </button>
+                        <button id="btnGenerateDualSet" type="button" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-violet-600/20 hover:bg-violet-600/30 text-violet-200 border border-violet-500/35 transition-colors cursor-pointer">
+                            <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+                            <span>Combo Móc + Sàn</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- View Mode Tabs -->
+                <div class="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-studio-850 border border-studio-700/80 mb-4">
+                    <button type="button" data-mode="single" class="mode-tab py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition-colors cursor-pointer">Ảnh sản phẩm</button>
+                    <button type="button" data-mode="compare" class="mode-tab py-1.5 rounded-lg text-xs font-medium text-zinc-300 hover:text-white transition-colors cursor-pointer">Trượt Trước/Sau</button>
+                    <button type="button" data-mode="sidebyside" class="mode-tab py-1.5 rounded-lg text-xs font-medium text-zinc-300 hover:text-white transition-colors cursor-pointer">Song song</button>
+                </div>
+
+                <!-- Stage Container -->
+                <div id="resultStage" class="relative rounded-2xl bg-studio-950 border border-studio-800 min-h-[420px] flex items-center justify-center overflow-hidden">
+                    <!-- Empty State -->
+                    <div id="emptyResultState" class="text-center px-6 py-10 max-w-md">
+                        <div class="w-14 h-14 rounded-2xl bg-studio-850 border border-studio-700 flex items-center justify-center mx-auto mb-3 text-indigo-400">
+                            <i data-lucide="image" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-sm font-bold text-white mb-1.5">Chưa có ảnh sản phẩm nào được tạo</h3>
+                        <p class="text-xs text-zinc-400 leading-relaxed">
+                            Tải lên 1 hoặc 2 ảnh người mẫu mặc áo, quần hoặc áo khoác ở cột bên trái (hoặc bấm <strong class="text-amber-300">Dùng thử ảnh mẫu</strong>) rồi nhấn <strong>Tạo Ảnh Sản Phẩm Studio</strong>.
+                        </p>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="loadingResultState" class="hidden text-center px-6 py-10 max-w-sm">
+                        <div class="w-12 h-12 rounded-full border-4 border-indigo-500/25 border-t-indigo-500 animate-spin mx-auto mb-3"></div>
+                        <div id="loadingStepText" class="text-xs sm:text-sm font-semibold text-white mb-1">AI đang phân tích trang phục &amp; dựng studio...</div>
+                        <p class="text-xs text-zinc-400">Đang bảo toàn chi tiết logo, form dáng và ánh sáng</p>
+                    </div>
+
+                    <!-- Single View -->
+                    <div id="viewSingle" class="hidden relative w-full h-full flex items-center justify-center p-3">
+                        <img id="resultImgSingle" src="" alt="Studio Result" class="max-h-[540px] w-auto max-w-full rounded-xl object-contain transition-transform duration-200 cursor-zoom-in" />
+                        <span id="zoomHintBadge" class="hidden absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-zinc-950/85 text-[11px] text-zinc-200 border border-zinc-700 pointer-events-none">
+                            Di chuột để soi chi tiết • Nhấn ảnh hoặc nút để thu nhỏ
+                        </span>
+                    </div>
+
+                    <!-- Compare Slider View -->
+                    <div id="viewCompare" class="hidden relative w-full h-[460px] select-none overflow-hidden">
+                        <img id="compareAfterImg" src="" alt="After" class="w-full h-full object-contain" />
+                        <div id="compareBeforeClip" class="absolute inset-0 overflow-hidden" style="width: 50%;">
+                            <img id="compareBeforeImg" src="" alt="Before" class="w-full h-full object-contain" />
+                        </div>
+                        <div id="compareDivider" class="absolute top-0 bottom-0 w-0.5 bg-white shadow-[0_0_10px_rgba(0,0,0,0.8)] pointer-events-none" style="left: 50%;">
+                            <div class="w-7 h-7 rounded-full bg-white text-zinc-900 shadow-lg flex items-center justify-center absolute top-1/2 -translate-y-1/2 -translate-x-1/2">
+                                <i data-lucide="move-horizontal" class="w-3.5 h-3.5"></i>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-md bg-zinc-950/80 text-[11px] font-semibold text-white absolute top-3 left-3">Gốc</span>
+                        <span class="px-2.5 py-1 rounded-md bg-indigo-600/90 text-[11px] font-semibold text-white absolute top-3 right-3">Studio AI</span>
+                        <input id="compareRange" type="range" min="0" max="100" value="50" class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize" />
+                    </div>
+
+                    <!-- Side-by-side View -->
+                    <div id="viewSideBySide" class="hidden w-full grid grid-cols-2 gap-3 p-3">
+                        <div class="rounded-xl bg-studio-900/90 border border-studio-800 p-2 flex flex-col">
+                            <span class="text-[11px] font-semibold text-zinc-400 mb-1.5 text-center" id="sideBeforeLabel">Ảnh gốc</span>
+                            <img id="sideBeforeImg" src="" alt="Original" class="w-full h-80 object-contain rounded-lg bg-studio-950" />
+                        </div>
+                        <div class="rounded-xl bg-studio-900/90 border border-studio-800 p-2 flex flex-col">
+                            <span class="text-[11px] font-semibold text-indigo-300 mb-1.5 text-center">Ảnh Studio AI</span>
+                            <img id="sideAfterImg" src="" alt="Result" class="w-full h-80 object-contain rounded-lg bg-studio-950" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Bar -->
+                <div id="resultActionsBar" class="hidden mt-4 space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-xs text-zinc-400">Nguồn đối chiếu:</span>
+                            <button type="button" data-side="1" class="side-btn px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-600 text-white cursor-pointer">Ảnh #1</button>
+                            <button type="button" data-side="2" class="side-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-studio-850 text-zinc-300 border border-studio-700 cursor-pointer">Ảnh #2</button>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-2">
+                            <button id="btnCopyPrompt" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-studio-850 hover:bg-studio-800 text-zinc-200 border border-studio-700 transition-colors cursor-pointer">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                <span>Sao chép Prompt</span>
+                            </button>
+                            <button id="btnDownloadPng" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition-colors cursor-pointer">
+                                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                                <span>Tải PNG</span>
+                            </button>
+                            <button id="btnDownloadJpg" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition-colors cursor-pointer">
+                                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                                <span>Tải JPG</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Video Studio Bar -->
+                    <div id="videoStudioBar" class="rounded-xl bg-studio-850/90 border border-studio-700/80 p-3.5 space-y-3">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs sm:text-sm font-bold text-white">Tạo Video Studio Sản Phẩm</span>
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-violet-600 text-white">TikTok / Shopee Video</span>
+                                </div>
+                                <p class="text-[11px] text-zinc-400 mt-0.5">Dựng video chuyển động mượt từ ảnh kết quả (hoặc kết hợp nhiều ảnh trong lịch sử) để xuất tải về.</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <select id="videoMotionStyle" class="sm:col-span-2 rounded-xl bg-studio-950 border border-studio-700 px-3 py-2 text-xs text-zinc-200 focus:outline-none focus:border-violet-500">
+                                <option value="zoompan">Lia máy &amp; Zoom nhẹ (Ken Burns)</option>
+                                <option value="showcase">Chuyển cảnh nhiều mẫu / lịch sử</option>
+                                <option value="pulse">Nhịp thở &amp; ánh sáng Studio</option>
+                            </select>
+
+                            <select id="videoDurationSec" class="rounded-xl bg-studio-950 border border-studio-700 px-3 py-2 text-xs text-zinc-200 focus:outline-none focus:border-violet-500">
+                                <option value="5">5 giây</option>
+                                <option value="8" selected>8 giây</option>
+                                <option value="12">12 giây</option>
+                            </select>
+                        </div>
+
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <button id="btnGenerateVideo" type="button" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-violet-600 hover:bg-violet-500 text-white transition-colors cursor-pointer">
+                                <i data-lucide="film" class="w-4 h-4"></i>
+                                <span id="btnGenerateVideoText">Tạo Video</span>
+                            </button>
+
+                            <a id="btnDownloadVideo" href="#" download="studio-product-video.webm" class="hidden inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition-colors">
+                                <i data-lucide="video" class="w-4 h-4"></i>
+                                <span>Tải Video</span>
+                            </a>
+                        </div>
+
+                        <div id="videoPlayerWrap" class="hidden space-y-2 pt-2 border-t border-studio-700/70">
+                            <video id="resultVideoPlayer" controls playsinline loop class="w-full max-h-80 rounded-xl bg-black object-contain"></video>
+                            <p id="videoMetaInfo" class="text-[11px] text-zinc-400">Video dựng từ ảnh Studio AI • Sẵn sàng tải xuống đăng TikTok / Shopee Video</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Feature Suggestions & Sales Tips -->
+            <section id="featureSuggestionsBox" class="rounded-2xl bg-studio-900 border border-studio-800 p-4 sm:p-5 shadow-xl">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                    <span class="text-xs font-semibold text-zinc-200 flex items-center gap-1.5">
+                        <i data-lucide="lightbulb" class="w-4 h-4 text-amber-400"></i>
+                        Gợi ý tính năng &amp; Mẹo tối ưu ảnh bán hàng
+                    </span>
+                    <button id="btnCopyCaptionIdea" type="button" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 transition-colors cursor-pointer">
+                        <i data-lucide="plus" class="w-3 h-3"></i>
+                        <span>Chèn ý tưởng vào Prompt</span>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                    <button type="button" data-snippet="Balanced framing with clean margin space for price, size, and title badges" class="chip-btn text-left rounded-xl p-2.5 bg-studio-850 hover:bg-studio-800 border border-studio-700/80 transition-colors cursor-pointer">
+                        <span class="text-xs font-semibold text-white block mb-0.5">1. Ảnh bìa chừa chỗ chữ</span>
+                        <span class="text-[11px] text-zinc-400 block leading-snug">Tối ưu bố cục để dễ chèn badge giá, size &amp; tên sản phẩm.</span>
+                    </button>
+
+                    <button type="button" data-snippet="Emphasize structured garment drape, neat stitching lines, and authentic textile weave" class="chip-btn text-left rounded-xl p-2.5 bg-studio-850 hover:bg-studio-800 border border-studio-700/80 transition-colors cursor-pointer">
+                        <span class="text-xs font-semibold text-white block mb-0.5">2. Soi chất vải &amp; form</span>
+                        <span class="text-[11px] text-zinc-400 block leading-snug">Nhấn mạnh độ đứng form, đường chỉ may và bề mặt vải.</span>
+                    </button>
+
+                    <button type="button" data-snippet="Soft warm Korean lookbook lighting with gentle natural shadows" class="chip-btn text-left rounded-xl p-2.5 bg-studio-850 hover:bg-studio-800 border border-studio-700/80 transition-colors cursor-pointer">
+                        <span class="text-xs font-semibold text-white block mb-0.5">3. Tone Lookbook Hàn</span>
+                        <span class="text-[11px] text-zinc-400 block leading-snug">Ánh sáng ấm nhẹ, hợp thời trang nữ, polo &amp; áo khoác.</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- History Section -->
+            <section id="historySection" class="rounded-2xl bg-studio-900 border border-studio-800 p-4 sm:p-5 shadow-xl">
+                <div class="flex items-center justify-between gap-2 mb-3">
+                    <span class="text-xs font-bold text-zinc-200">Lịch sử ảnh đã tạo</span>
+                    <button id="btnClearHistory" type="button" class="text-xs text-zinc-400 hover:text-rose-400 transition-colors cursor-pointer">Xóa lịch sử</button>
+                </div>
+                <div id="historyGrid" class="grid grid-cols-3 sm:grid-cols-4 gap-2.5">
+                    <div id="historyEmpty" class="col-span-full text-center py-6 text-xs text-zinc-500">Chưa có ảnh nào trong phiên này.</div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // ==========================================
+        // 1. TRẠNG THÁI ỨNG DỤNG & THAM CHIẾU DOM
+        // ==========================================
+        const I18N = {
+            vi: {
+                pageTitle: 'Ghost-F AI - TikTok Affiliate',
+                appTitle: 'Ghost-F AI',
+                appBadge: 'TikTok Affiliate',
+                appSubtitle: 'Tách trang phục từ người mẫu & Tái tạo bối cảnh Studio tự động',
+                demoSample: 'Dùng thử ảnh mẫu',
+                resetTitle: 'Đặt lại toàn bộ',
+                step1Title: 'Ảnh người mẫu đang mặc',
+                swapSides: 'Đảo vị trí',
+                slot1Title: 'Ảnh mẫu #1',
+                slot1Sub: 'Mặt trước / Mặt sau',
+                slot2Title: 'Ảnh mẫu #2',
+                slot2Sub: 'Mặt còn lại (tùy chọn)',
+                roleAnalyzing: 'Đang phân tích...',
+                roleFront: 'Mặt trước (Front)',
+                roleBack: 'Mặt sau (Back)',
+                changeBtn: 'Đổi',
+                fidelityTitle: 'Khóa 100% Chi Tiết Gốc',
+                fidelityDesc: 'Giữ nguyên từng logo, chữ in, sọc viền, chất liệu & màu sắc',
+                visionMapTitle: 'Bản đồ chi tiết trang phục (AI Vision)',
+                scanBtn: 'Quét chi tiết đồ',
+                scanningBtn: 'Đang quét...',
+                catDefault: 'Loại đồ: Tự nhận diện (Áo / Quần / Áo khoác)',
+                catPrefix: 'Loại đồ:',
+                sidesDefault: 'Mặt: Chờ phân tích',
+                sidesPrefix: 'Mặt:',
+                detailsPlaceholder: 'AI sẽ tự nhận diện: Loại đồ (Áo / Quần / Áo khoác), mặt trước & mặt sau, logo, đường sọc, cúc/khóa kéo, chất liệu vải...',
+                step2Title: 'Chọn bối cảnh Studio',
+                presetHint: 'Chuẩn ảnh mẫu e-commerce',
+                presetHangerTitle: 'Treo trên móc (Studio Rack)',
+                presetHangerBadge: 'Chuẩn mẫu 1',
+                presetHangerDesc: 'Treo ngay ngắn trên móc gỗ / móc kẹp quần trên giá treo tối giản, tường sáng có tranh khung & cây xanh.',
+                presetFlatlayTitle: 'Trải phẳng dưới sàn (Flat-lay)',
+                presetFlatlayBadge: 'Chuẩn mẫu 2',
+                presetFlatlayDesc: 'Góc chụp từ trên xuống 90°, trải phẳng trên thảm lông tròn màu kem nền sàn gỗ với ánh nắng xiên nhẹ.',
+                presetCustomTitle: 'Bối cảnh tự do (100% Prompt)',
+                presetCustomBadge: 'Tự do',
+                presetCustomDesc: 'Tự mô tả hoàn toàn phông nền, ánh sáng, đạo cụ theo phong cách riêng của shop.',
+                presetWhiteTitle: 'Nền trắng tinh #FFFFFF (TMĐT)',
+                presetWhiteBadge: 'Shopee / Lazada',
+                presetWhiteDesc: 'Nền trắng tinh #FFFFFF thuần khiết, không đạo cụ, không thảm hay tranh trang trí, tối ưu làm ảnh bìa chính.',
+                viewModeLabel: 'Góc hiển thị sản phẩm',
+                viewBoth: 'Cả 2 mặt (Trước & Sau)',
+                viewFront: 'Chỉ mặt trước',
+                viewBack: 'Chỉ mặt sau',
+                customPromptLabel: 'Nhập Prompt Tùy Chỉnh (Theo ý muốn)',
+                blendModeBlend: 'Kết hợp với bối cảnh đang chọn',
+                blendModeOverride: 'Dùng 100% Prompt tự do của tôi',
+                customPromptPlaceholder: 'Nhập mô tả bối cảnh, ánh sáng, cách bày áo/quần/áo khoác theo ý bạn...',
+                chipConcrete: '+ Nền bê tông & phụ kiện',
+                chipHanger2: '+ Treo 2 mặt cạnh nhau',
+                chipFlatlay2: '+ Trải 2 mặt song song',
+                chipCrisp: '+ Siêu nét chi tiết gốc',
+                toggleFullPrompt: 'Xem & Chỉnh sửa Prompt kỹ thuật đầy đủ',
+                manualPromptCheckbox: 'Chỉnh sửa trực tiếp câu lệnh gửi AI',
+                syncPromptBtn: 'Đồng bộ lại tự động',
+                ratioLabel: 'Tỷ lệ khung hình',
+                ratioHint: 'Chuẩn TikTok Shop / Reels',
+                generateBtn: 'Tạo Ảnh Sản Phẩm Studio',
+                generatingBtn: 'Đang dựng ảnh Studio...',
+                comboGeneratingBtn: 'Đang tạo Combo Móc + Sàn...',
+                resultTitle: 'Kết quả Studio AI',
+                zoomIn: 'Soi nét 2x',
+                zoomOut: 'Thu nhỏ 1x',
+                comboBtn: 'Combo Móc + Sàn',
+                tabSingle: 'Ảnh sản phẩm',
+                tabCompare: 'Trượt Trước/Sau',
+                tabSideBySide: 'Song song',
+                emptyTitle: 'Chưa có ảnh sản phẩm nào được tạo',
+                emptyDescBefore: 'Tải lên 1 hoặc 2 ảnh người mẫu mặc áo, quần hoặc áo khoác ở cột bên trái (hoặc bấm ',
+                emptyDescHighlight: 'Dùng thử ảnh mẫu',
+                emptyDescAfter: ') rồi nhấn ',
+                loadingDefault: 'AI đang phân tích trang phục & dựng studio...',
+                loadingSub: 'Đang bảo toàn chi tiết logo, form dáng và ánh sáng',
+                zoomHint: 'Di chuột để soi chi tiết • Nhấn ảnh hoặc nút để thu nhỏ',
+                compareBefore: 'Gốc',
+                compareAfter: 'Studio AI',
+                sideAfterLabel: 'Ảnh Studio AI',
+                videoMetaDefault: 'Video dựng từ ảnh Studio AI • Sẵn sàng tải xuống đăng TikTok / Shopee Video',
+                videoTitle: 'Tạo Video Studio Sản Phẩm',
+                videoBadge: 'TikTok / Shopee Video',
+                videoDesc: 'Dựng video chuyển động mượt từ ảnh kết quả (hoặc kết hợp nhiều ảnh trong lịch sử) để xuất tải về.',
+                motionZoomPan: 'Lia máy & Zoom nhẹ (Ken Burns)',
+                motionShowcase: 'Chuyển cảnh nhiều mẫu / lịch sử',
+                motionPulse: 'Nhịp thở & ánh sáng Studio',
+                dur5: '5 giây',
+                dur8: '8 giây',
+                dur12: '12 giây',
+                genVideoBtn: 'Tạo Video',
+                genVideoBusy: 'Đang dựng video...',
+                refSourceLabel: 'Nguồn đối chiếu:',
+                side1Btn: 'Ảnh #1',
+                side2Btn: 'Ảnh #2',
+                copyPromptBtn: 'Sao chép Prompt',
+                downloadPngBtn: 'Tải PNG',
+                downloadJpgBtn: 'Tải JPG',
+                downloadVideoBtn: 'Tải Video',
+                suggestionsTitle: 'Gợi ý tính năng & Mẹo tối ưu ảnh bán hàng',
+                insertIdeaBtn: 'Chèn ý tưởng vào Prompt',
+                sug1Title: '1. Ảnh bìa chừa chỗ chữ',
+                sug1Desc: 'Tối ưu bố cục để dễ chèn badge giá, size & tên sản phẩm.',
+                sug2Title: '2. Soi chất vải & form',
+                sug2Desc: 'Nhấn mạnh độ đứng form, đường chỉ may và bề mặt vải.',
+                sug3Title: '3. Tone Lookbook Hàn',
+                sug3Desc: 'Ánh sáng ấm nhẹ, hợp thời trang nữ, polo & áo khoác.',
+                historyTitle: 'Lịch sử ảnh đã tạo',
+                clearHistoryBtn: 'Xóa lịch sử',
+                toastInvalidImage: 'Vui lòng chọn tệp hình ảnh hợp lệ (JPG, PNG, WEBP).',
+                toastNeedImage: 'Vui lòng tải lên ít nhất 1 ảnh người mẫu trước.',
+                toastSwapped: 'Đã đảo vị trí 2 ảnh mẫu.',
+                toastCopied: 'Đã sao chép Prompt kỹ thuật!',
+                toastIdeaAdded: 'Đã thêm ý tưởng tối ưu bán hàng vào Prompt.',
+                toastReset: 'Đã đặt lại giao diện Studio.',
+                toastVideoReady: 'Đã tạo xong video Studio sản phẩm!',
+                demoDetails: 'Áo thun polo cổ bẻ màu trắng kem kẻ sọc ngang xám xanh đậm, cúc cài trước ngực, form dáng suông vừa.',
+                demoLoaded: 'Đã nạp 2 ảnh mẫu (Mặt trước & Mặt sau). Bạn có thể bấm Tạo Ảnh Studio!',
+                ideaText: 'Bố cục sạch sẽ, tôn dáng sản phẩm, ánh sáng tự nhiên sắc nét chuẩn ảnh bán hàng TikTok & Shopee'
+            },
+            en: {
+                pageTitle: 'Ghost-F AI - TikTok Affiliate',
+                appTitle: 'Ghost-F AI',
+                appBadge: 'TikTok Affiliate',
+                appSubtitle: 'Extract garments from models & Auto-generate Studio scenes',
+                demoSample: 'Try sample photos',
+                resetTitle: 'Reset all',
+                step1Title: 'Model Wearing Garment',
+                swapSides: 'Swap slots',
+                slot1Title: 'Sample Photo #1',
+                slot1Sub: 'Front / Back view',
+                slot2Title: 'Sample Photo #2',
+                slot2Sub: 'Other side (optional)',
+                roleAnalyzing: 'Analyzing...',
+                roleFront: 'Front view',
+                roleBack: 'Back view',
+                changeBtn: 'Change',
+                fidelityTitle: '100% Original Detail Lock',
+                fidelityDesc: 'Keep every logo, text print, trim stripe, fabric & color intact',
+                visionMapTitle: 'Garment Detail Map (AI Vision)',
+                scanBtn: 'Scan garment',
+                scanningBtn: 'Scanning...',
+                catDefault: 'Garment: Auto-detect (Top / Pants / Jacket)',
+                catPrefix: 'Garment:',
+                sidesDefault: 'Sides: Pending analysis',
+                sidesPrefix: 'Sides:',
+                detailsPlaceholder: 'AI auto-detects: Garment type (Shirt / Pants / Jacket), front & back, logos, stripes, buttons/zippers, fabric texture...',
+                step2Title: 'Choose Studio Scene',
+                presetHint: 'E-commerce reference style',
+                presetHangerTitle: 'On Hanger (Studio Rack)',
+                presetHangerBadge: 'Style 1',
+                presetHangerDesc: 'Hung neatly on a wooden hanger or pants clip hanger on a minimalist rack with framed art & plant.',
+                presetFlatlayTitle: 'Flat-lay on Floor',
+                presetFlatlayBadge: 'Style 2',
+                presetFlatlayDesc: 'Top-down 90° shot on a round cream shag rug over warm wood flooring with soft sunlight.',
+                presetCustomTitle: 'Custom Scene (100% Prompt)',
+                presetCustomBadge: 'Custom',
+                presetCustomDesc: 'Describe your own backdrop, lighting, and props tailored to your store aesthetic.',
+                presetWhiteTitle: 'Pure White #FFFFFF (E-Commerce)',
+                presetWhiteBadge: 'Shopee / Lazada',
+                presetWhiteDesc: 'Pure solid #FFFFFF white background with zero props or decor, ideal for main marketplace listings.',
+                viewModeLabel: 'Garment View Mode',
+                viewBoth: 'Both Sides (Front & Back)',
+                viewFront: 'Front only',
+                viewBack: 'Back only',
+                customPromptLabel: 'Custom Prompt (Your Wish)',
+                blendModeBlend: 'Combine with selected scene',
+                blendModeOverride: 'Use 100% my custom prompt',
+                customPromptPlaceholder: 'Describe background, lighting, or garment layout in your own words...',
+                chipConcrete: '+ Concrete & accessories',
+                chipHanger2: '+ 2 hangers side by side',
+                chipFlatlay2: '+ Front & back flat-lay',
+                chipCrisp: '+ Ultra-sharp original details',
+                toggleFullPrompt: 'View & Edit Full Technical Prompt',
+                manualPromptCheckbox: 'Edit prompt sent to AI directly',
+                syncPromptBtn: 'Re-sync auto prompt',
+                ratioLabel: 'Aspect Ratio',
+                ratioHint: 'TikTok Shop / Reels standard',
+                generateBtn: 'Generate Studio Product Photo',
+                generatingBtn: 'Generating Studio photo...',
+                comboGeneratingBtn: 'Generating Rack + Rug Combo...',
+                resultTitle: 'AI Studio Result',
+                zoomIn: '2x Loupe',
+                zoomOut: 'Reset 1x',
+                comboBtn: 'Rack + Rug Combo',
+                tabSingle: 'Product Photo',
+                tabCompare: 'Before/After Slider',
+                tabSideBySide: 'Side by Side',
+                emptyTitle: 'No studio photo generated yet',
+                emptyDescBefore: 'Upload 1 or 2 model photos wearing a top, pants, or jacket on the left (or click ',
+                emptyDescHighlight: 'Try sample photos',
+                emptyDescAfter: ') then click ',
+                loadingDefault: 'AI is analyzing garment & building studio scene...',
+                loadingSub: 'Preserving logo details, garment shape, and lighting',
+                zoomHint: 'Hover to inspect details • Click image or button to zoom out',
+                compareBefore: 'Original',
+                compareAfter: 'AI Studio',
+                sideAfterLabel: 'AI Studio Photo',
+                videoMetaDefault: 'Video rendered from AI Studio photo • Ready to download for TikTok / Shopee Video',
+                videoTitle: 'Create Product Studio Video',
+                videoBadge: 'TikTok / Shopee Video',
+                videoDesc: 'Render smooth motion from your result image (or combine history items) and download.',
+                motionZoomPan: 'Pan & Gentle Zoom (Ken Burns)',
+                motionShowcase: 'Multi-item / History Reel',
+                motionPulse: 'Studio Light & Breath',
+                dur5: '5 sec',
+                dur8: '8 sec',
+                dur12: '12 sec',
+                genVideoBtn: 'Create Video',
+                genVideoBusy: 'Rendering video...',
+                refSourceLabel: 'Compare source:',
+                side1Btn: 'Photo #1',
+                side2Btn: 'Photo #2',
+                copyPromptBtn: 'Copy Prompt',
+                downloadPngBtn: 'Download PNG',
+                downloadJpgBtn: 'Download JPG',
+                downloadVideoBtn: 'Download Video',
+                suggestionsTitle: 'Feature Ideas & Sales Photo Tips',
+                insertIdeaBtn: 'Insert idea into Prompt',
+                sug1Title: '1. Cover Layout with Space',
+                sug1Desc: 'Balanced framing leaving room for price, size & title badges.',
+                sug2Title: '2. Fabric & Fit Focus',
+                sug2Desc: 'Highlight garment structure, stitching lines, and fabric weave.',
+                sug3Title: '3. Korean Lookbook Tone',
+                sug3Desc: 'Warm soft morning light suited for womenswear, polos & jackets.',
+                historyTitle: 'Generated History',
+                clearHistoryBtn: 'Clear history',
+                toastInvalidImage: 'Please select a valid image file (JPG, PNG, WEBP).',
+                toastNeedImage: 'Please upload at least 1 model photo first.',
+                toastSwapped: 'Swapped the 2 sample photo slots.',
+                toastCopied: 'Copied technical prompt!',
+                toastIdeaAdded: 'Added sales layout idea to Prompt.',
+                toastReset: 'Studio workspace reset.',
+                toastVideoReady: 'Studio product video is ready!',
+                demoDetails: 'Cream-white collared polo shirt with dark slate-green horizontal stripes, front placket buttons, relaxed fit.',
+                demoLoaded: 'Loaded 2 sample photos (Front & Back). Click Generate Studio Product Photo!',
+                ideaText: 'Clean layout, flattering garment drape, crisp natural lighting for TikTok & Shopee listings'
+            },
+            zh: {
+                pageTitle: 'Ghost-F AI - TikTok Affiliate',
+                appTitle: 'Ghost-F AI',
+                appBadge: 'TikTok Affiliate',
+                appSubtitle: '从模特图提取服饰并自动生成影棚商品图',
+                demoSample: '使用示例图片',
+                resetTitle: '全部重置',
+                step1Title: '模特上身图',
+                swapSides: '互换位置',
+                slot1Title: '示例图 #1',
+                slot1Sub: '正面 / 背面',
+                slot2Title: '示例图 #2',
+                slot2Sub: '另一面（可选）',
+                roleAnalyzing: '正在识别...',
+                roleFront: '正面 (Front)',
+                roleBack: '背面 (Back)',
+                changeBtn: '更换',
+                fidelityTitle: '100% 锁定原款细节',
+                fidelityDesc: '完整保留每一个 Logo、印花文字、滚边条纹、面料与颜色',
+                visionMapTitle: '服饰细节地图 (AI Vision)',
+                scanBtn: '扫描服饰细节',
+                scanningBtn: '扫描中...',
+                catDefault: '服饰类别：自动识别（上衣 / 裤装 / 外套）',
+                catPrefix: '服饰类别：',
+                sidesDefault: '正反面：等待分析',
+                sidesPrefix: '正反面：',
+                detailsPlaceholder: 'AI 将自动识别：服饰类别（上衣 / 裤装 / 外套）、正反面、Logo、条纹、纽扣/拉链、面料纹理...',
+                step2Title: '选择影棚场景',
+                presetHint: '电商参考图风格',
+                presetHangerTitle: '衣架悬挂 (Studio Rack)',
+                presetHangerBadge: '参考款 1',
+                presetHangerDesc: '整齐挂在浅木衣架或裤夹上，置于极简金属衣杆，浅色墙面配装饰画与绿植。',
+                presetFlatlayTitle: '地面平铺 (Flat-lay)',
+                presetFlatlayBadge: '参考款 2',
+                presetFlatlayDesc: '90° 俯拍置于浅木地板的奶油色圆形长毛地毯中央，伴随柔和斜射阳光。',
+                presetCustomTitle: '自由场景 (100% Prompt)',
+                presetCustomBadge: '自定义',
+                presetCustomDesc: '根据店铺风格完全自定义背景、光线与陈列道具。',
+                presetWhiteTitle: '纯白底 #FFFFFF (电商主图)',
+                presetWhiteBadge: 'Shopee / Lazada',
+                presetWhiteDesc: '纯净 #FFFFFF 白色背景，无道具与装饰，适合作为电商平台主图。',
+                viewModeLabel: '服饰展示视角',
+                viewBoth: '正反双面同框',
+                viewFront: '仅看正面',
+                viewBack: '仅看背面',
+                customPromptLabel: '输入自定义提示词（按需填写）',
+                blendModeBlend: '与当前所选场景融合',
+                blendModeOverride: '100% 使用我的自定义提示词',
+                customPromptPlaceholder: '输入您想要的背景、光线或上衣/裤装/外套摆放方式...',
+                chipConcrete: '+ 水泥底与配饰',
+                chipHanger2: '+ 双衣架并排展示',
+                chipFlatlay2: '+ 正反面平铺并排',
+                chipCrisp: '+ 原款细节超清',
+                toggleFullPrompt: '查看并编辑完整技术提示词',
+                manualPromptCheckbox: '直接编辑发送给 AI 的提示词',
+                syncPromptBtn: '重新自动同步',
+                ratioLabel: '画面比例',
+                ratioHint: '适合 TikTok Shop / 短视频',
+                generateBtn: '生成影棚商品图',
+                generatingBtn: '正在生成影棚图...',
+                comboGeneratingBtn: '正在生成衣架+地毯组合...',
+                resultTitle: 'AI 影棚结果',
+                zoomIn: '2倍放大看细节',
+                zoomOut: '恢复 1倍',
+                comboBtn: '衣架+地毯组合',
+                tabSingle: '商品图',
+                tabCompare: '前后对比滑块',
+                tabSideBySide: '并排对比',
+                emptyTitle: '尚未生成商品图',
+                emptyDescBefore: '请在左侧上传 1 至 2 张模特穿着上衣、裤装或外套的照片（或点击 ',
+                emptyDescHighlight: '使用示例图片',
+                emptyDescAfter: '），然后点击 ',
+                loadingDefault: 'AI 正在分析服饰并搭建影棚场景...',
+                loadingSub: '保持 Logo 细节、版型轮廓与自然光影',
+                zoomHint: '移动鼠标查看局部细节 • 点击图片或按钮恢复大小',
+                compareBefore: '原图',
+                compareAfter: 'AI 影棚',
+                sideAfterLabel: 'AI 影棚图',
+                videoMetaDefault: '由 AI 影棚图合成的视频 • 可直接下载发布至 TikTok / 电商短视频',
+                videoTitle: '生成商品影棚视频',
+                videoBadge: 'TikTok / 短视频',
+                videoDesc: '基于生成图（或历史多图）合成平滑运镜视频并导出下载。',
+                motionZoomPan: '缓慢推拉与平移 (Ken Burns)',
+                motionShowcase: '多图 / 历史轮播转场',
+                motionPulse: '影棚呼吸光影',
+                dur5: '5 秒',
+                dur8: '8 秒',
+                dur12: '12 秒',
+                genVideoBtn: '生成视频',
+                genVideoBusy: '正在合成视频...',
+                refSourceLabel: '对比原图：',
+                side1Btn: '图 #1',
+                side2Btn: '图 #2',
+                copyPromptBtn: '复制提示词',
+                downloadPngBtn: '下载 PNG',
+                downloadJpgBtn: '下载 JPG',
+                downloadVideoBtn: '下载视频',
+                suggestionsTitle: '功能建议与卖货图优化技巧',
+                insertIdeaBtn: '将创意插入提示词',
+                sug1Title: '1. 留白方便加字',
+                sug1Desc: '构图整洁，方便后期添加价格、尺码与款式标签。',
+                sug2Title: '2. 突出面料与版型',
+                sug2Desc: '强化挺括版型、走线细节与真实面料质感。',
+                sug3Title: '3. 韩系 Lookbook 色调',
+                sug3Desc: '温暖柔和晨光，适合女装、Polo衫与外套。',
+                historyTitle: '本会话生成历史',
+                clearHistoryBtn: '清空历史',
+                toastInvalidImage: '请选择有效的图片文件（JPG、PNG、WEBP）。',
+                toastNeedImage: '请先上传至少 1 张模特图片。',
+                toastSwapped: '已互换两张示例图片位置。',
+                toastCopied: '已复制技术提示词！',
+                toastIdeaAdded: '已将卖货构图建议加入提示词。',
+                toastReset: '已重置影棚工作区。',
+                toastVideoReady: '影棚商品视频已生成！',
+                demoDetails: '奶油白翻领 Polo 衫，深蓝绿横向条纹，前襟纽扣，宽松合身版型。',
+                demoLoaded: '已载入 2 张示例图（正面与背面），点击“生成影棚商品图”即可体验！',
+                ideaText: '构图干净、版型自然挺括、光线清晰，适合电商与短视频带货展示'
+            },
+            ru: {
+                pageTitle: 'Ghost-F AI - TikTok Affiliate',
+                appTitle: 'Ghost-F AI',
+                appBadge: 'TikTok Affiliate',
+                appSubtitle: 'Извлечение одежды с моделей и студийный фон автоматически',
+                demoSample: 'Пример фото',
+                resetTitle: 'Сбросить всё',
+                step1Title: 'Фото модели в одежде',
+                swapSides: 'Поменять местами',
+                slot1Title: 'Пример фото #1',
+                slot1Sub: 'Перед / Спина',
+                slot2Title: 'Пример фото #2',
+                slot2Sub: 'Другая сторона (опц.)',
+                roleAnalyzing: 'Анализ...',
+                roleFront: 'Перед (Front)',
+                roleBack: 'Спина (Back)',
+                changeBtn: 'Сменить',
+                fidelityTitle: '100% сохранение деталей оригинала',
+                fidelityDesc: 'Сохраняет каждый логотип, принт, кант, ткань и оттенок',
+                visionMapTitle: 'Карта деталей одежды (AI Vision)',
+                scanBtn: 'Сканировать',
+                scanningBtn: 'Сканирование...',
+                catDefault: 'Тип: Автоопределение (Верх / Брюки / Куртка)',
+                catPrefix: 'Тип:',
+                sidesDefault: 'Стороны: Ожидание анализа',
+                sidesPrefix: 'Стороны:',
+                detailsPlaceholder: 'ИИ определит: тип одежды (рубашка/футболка / брюки / куртка), перед и спину, логотипы, полосы, пуговицы/молнии, фактуру ткани...',
+                step2Title: 'Выбор студийного фона',
+                presetHint: 'Стиль карточек маркетплейсов',
+                presetHangerTitle: 'На вешалке (Studio Rack)',
+                presetHangerBadge: 'Образец 1',
+                presetHangerDesc: 'Аккуратно на деревянной вешалке или зажиме на минималистичной стойке, светлая стена с постерами и зеленью.',
+                presetFlatlayTitle: 'Раскладка на полу (Flat-lay)',
+                presetFlatlayBadge: 'Образец 2',
+                presetFlatlayDesc: 'Съёмка сверху 90° на круглом кремовом ковре поверх тёплого дерева с мягким солнечным светом.',
+                presetCustomTitle: 'Свой фон (100% Prompt)',
+                presetCustomBadge: 'Свой стиль',
+                presetCustomDesc: 'Опишите фон, свет и реквизит под стиль вашего магазина.',
+                presetWhiteTitle: 'Чистый белый #FFFFFF (Маркетплейс)',
+                presetWhiteBadge: 'Shopee / Lazada',
+                presetWhiteDesc: 'Чистый белый фон #FFFFFF без реквизита и декора — идеально для главного фото товара.',
+                viewModeLabel: 'Ракурс показа вещи',
+                viewBoth: 'Обе стороны (Перед и Спина)',
+                viewFront: 'Только перед',
+                viewBack: 'Только спина',
+                customPromptLabel: 'Свой промпт (по вашему запросу)',
+                blendModeBlend: 'Сочетать с выбранным фоном',
+                blendModeOverride: 'Использовать 100% мой промпт',
+                customPromptPlaceholder: 'Опишите фон, свет или раскладку одежды своими словами...',
+                chipConcrete: '+ Бетон и аксессуары',
+                chipHanger2: '+ 2 вешалки рядом',
+                chipFlatlay2: '+ Перед и спина рядом',
+                chipCrisp: '+ Чёткость деталей оригинала',
+                toggleFullPrompt: 'Показать и изменить полный технический промпт',
+                manualPromptCheckbox: 'Редактировать промпт для ИИ напрямую',
+                syncPromptBtn: 'Синхронизировать снова',
+                ratioLabel: 'Соотношение сторон',
+                ratioHint: 'Формат TikTok Shop / Reels',
+                generateBtn: 'Создать студийное фото',
+                generatingBtn: 'Создаём студийное фото...',
+                comboGeneratingBtn: 'Создаём набор Вешалка + Ковёр...',
+                resultTitle: 'Результат AI Studio',
+                zoomIn: 'Лупа 2x',
+                zoomOut: 'Сброс 1x',
+                comboBtn: 'Вешалка + Ковёр',
+                tabSingle: 'Фото товара',
+                tabCompare: 'Ползунок До/После',
+                tabSideBySide: 'Рядом',
+                emptyTitle: 'Студийное фото ещё не создано',
+                emptyDescBefore: 'Загрузите 1–2 фото модели в одежде слева (или нажмите ',
+                emptyDescHighlight: 'Пример фото',
+                emptyDescAfter: '), затем нажмите ',
+                loadingDefault: 'ИИ анализирует одежду и собирает студию...',
+                loadingSub: 'Сохраняем логотипы, посадку и студийный свет',
+                zoomHint: 'Наведите для осмотра деталей • Нажмите на фото или кнопку для возврата',
+                compareBefore: 'Исходник',
+                compareAfter: 'AI Studio',
+                sideAfterLabel: 'Фото AI Studio',
+                videoMetaDefault: 'Видео из фото AI Studio • Готово для загрузки в TikTok / маркетплейсы',
+                videoTitle: 'Создать видео товара в студии',
+                videoBadge: 'TikTok / Видео',
+                videoDesc: 'Соберите плавное видео из результата (или кадров истории) и скачайте файл.',
+                motionZoomPan: 'Панорама и плавный зум (Ken Burns)',
+                motionShowcase: 'Смена кадров / история',
+                motionPulse: 'Мягкий студийный свет',
+                dur5: '5 сек',
+                dur8: '8 сек',
+                dur12: '12 сек',
+                genVideoBtn: 'Создать видео',
+                genVideoBusy: 'Рендер видео...',
+                refSourceLabel: 'Источник сравнения:',
+                side1Btn: 'Фото #1',
+                side2Btn: 'Фото #2',
+                copyPromptBtn: 'Копировать промпт',
+                downloadPngBtn: 'Скачать PNG',
+                downloadJpgBtn: 'Скачать JPG',
+                downloadVideoBtn: 'Скачать видео',
+                suggestionsTitle: 'Идеи функций и советы для продаж',
+                insertIdeaBtn: 'Вставить идею в промпт',
+                sug1Title: '1. Место под текст и цену',
+                sug1Desc: 'Композиция с запасом места под плашки цены, размера и названия.',
+                sug2Title: '2. Фокус на ткани и швах',
+                sug2Desc: 'Подчёркивает форму изделия, строчку и фактуру материала.',
+                sug3Title: '3. Корейский лукбук',
+                sug3Desc: 'Тёплый утренний свет для женской одежды, поло и курток.',
+                historyTitle: 'История за сессию',
+                clearHistoryBtn: 'Очистить историю',
+                toastInvalidImage: 'Выберите корректный файл изображения (JPG, PNG, WEBP).',
+                toastNeedImage: 'Сначала загрузите хотя бы 1 фото модели.',
+                toastSwapped: 'Слоты примеров фото поменяны местами.',
+                toastCopied: 'Технический промпт скопирован!',
+                toastIdeaAdded: 'Идея для карточек добавлена в промпт.',
+                toastReset: 'Рабочая область сброшена.',
+                toastVideoReady: 'Студийное видео товара готово!',
+                demoDetails: 'Кремово-белое поло с отложным воротником, тёмно-сине-зелёными полосами и планкой на пуговицах.',
+                demoLoaded: 'Загружены 2 примера фото (Перед и Спина). Нажмите «Создать студийное фото»!',
+                ideaText: 'Чистая композиция, аккуратная форма вещи и естественный свет для карточек товаров'
+            }
+        };
+
+        const els = {
+            toastContainer: document.getElementById('toastContainer'),
+            langBtns: document.querySelectorAll('.lang-btn'),
+            btnDemoSample: document.getElementById('btnDemoSample'),
+            demoSampleText: document.getElementById('demoSampleText'),
+            btnResetAll: document.getElementById('btnResetAll'),
+            btnSwapSides: document.getElementById('btnSwapSides'),
+            fileInput1: document.getElementById('fileInput1'),
+            fileInput2: document.getElementById('fileInput2'),
+            slotEmpty1: document.getElementById('slotEmpty1'),
+            slotEmpty2: document.getElementById('slotEmpty2'),
+            slotPreview1: document.getElementById('slotPreview1'),
+            slotPreview2: document.getElementById('slotPreview2'),
+            imgPreview1: document.getElementById('imgPreview1'),
+            imgPreview2: document.getElementById('imgPreview2'),
+            badgeRole1: document.getElementById('badgeRole1'),
+            badgeRole2: document.getElementById('badgeRole2'),
+            fileName1: document.getElementById('fileName1'),
+            fileName2: document.getElementById('fileName2'),
+            btnRemove1: document.getElementById('btnRemove1'),
+            btnRemove2: document.getElementById('btnRemove2'),
+            fidelityLockToggle: document.getElementById('fidelityLockToggle'),
+            btnScanGarment: document.getElementById('btnScanGarment'),
+            scanBtnText: document.getElementById('scanBtnText'),
+            detectedCategoryBadge: document.getElementById('detectedCategoryBadge'),
+            detectedSidesBadge: document.getElementById('detectedSidesBadge'),
+            garmentDetailsMap: document.getElementById('garmentDetailsMap'),
+            presetCards: document.querySelectorAll('.preset-card'),
+            viewModeBtns: document.querySelectorAll('.viewmode-btn'),
+            userCustomPrompt: document.getElementById('userCustomPrompt'),
+            promptBlendMode: document.getElementById('promptBlendMode'),
+            btnClearPrompt: document.getElementById('btnClearPrompt'),
+            btnToggleFullPrompt: document.getElementById('btnToggleFullPrompt'),
+            chevronFullPrompt: document.getElementById('chevronFullPrompt'),
+            fullPromptPanel: document.getElementById('fullPromptPanel'),
+            useManualFullPrompt: document.getElementById('useManualFullPrompt'),
+            btnSyncFullPrompt: document.getElementById('btnSyncFullPrompt'),
+            fullPromptEditor: document.getElementById('fullPromptEditor'),
+            ratioHint: document.getElementById('ratioHint'),
+            aspectRatioGroup: document.getElementById('aspectRatioGroup'),
+            ratioBtns: document.querySelectorAll('.ratio-btn'),
+            btnGenerate: document.getElementById('btnGenerate'),
+            btnGenerateText: document.getElementById('btnGenerateText'),
+            btnToggleZoom: document.getElementById('btnToggleZoom'),
+            zoomBtnText: document.getElementById('zoomBtnText'),
+            btnGenerateDualSet: document.getElementById('btnGenerateDualSet'),
+            modeTabs: document.querySelectorAll('.mode-tab'),
+            emptyResultState: document.getElementById('emptyResultState'),
+            loadingResultState: document.getElementById('loadingResultState'),
+            loadingStepText: document.getElementById('loadingStepText'),
+            viewSingle: document.getElementById('viewSingle'),
+            resultImgSingle: document.getElementById('resultImgSingle'),
+            zoomHintBadge: document.getElementById('zoomHintBadge'),
+            viewCompare: document.getElementById('viewCompare'),
+            compareBeforeImg: document.getElementById('compareBeforeImg'),
+            compareAfterImg: document.getElementById('compareAfterImg'),
+            compareBeforeClip: document.getElementById('compareBeforeClip'),
+            compareDivider: document.getElementById('compareDivider'),
+            compareRange: document.getElementById('compareRange'),
+            viewSideBySide: document.getElementById('viewSideBySide'),
+            sideBeforeLabel: document.getElementById('sideBeforeLabel'),
+            sideBeforeImg: document.getElementById('sideBeforeImg'),
+            sideAfterImg: document.getElementById('sideAfterImg'),
+            resultActionsBar: document.getElementById('resultActionsBar'),
+            sideBtns: document.querySelectorAll('.side-btn'),
+            btnCopyPrompt: document.getElementById('btnCopyPrompt'),
+            btnDownloadPng: document.getElementById('btnDownloadPng'),
+            btnDownloadJpg: document.getElementById('btnDownloadJpg'),
+            videoStudioBar: document.getElementById('videoStudioBar'),
+            videoMotionStyle: document.getElementById('videoMotionStyle'),
+            videoDurationSec: document.getElementById('videoDurationSec'),
+            btnGenerateVideo: document.getElementById('btnGenerateVideo'),
+            btnGenerateVideoText: document.getElementById('btnGenerateVideoText'),
+            btnDownloadVideo: document.getElementById('btnDownloadVideo'),
+            videoPlayerWrap: document.getElementById('videoPlayerWrap'),
+            resultVideoPlayer: document.getElementById('resultVideoPlayer'),
+            videoMetaInfo: document.getElementById('videoMetaInfo'),
+            featureSuggestionsBox: document.getElementById('featureSuggestionsBox'),
+            btnCopyCaptionIdea: document.getElementById('btnCopyCaptionIdea'),
+            historySection: document.getElementById('historySection'),
+            historyGrid: document.getElementById('historyGrid'),
+            historyEmpty: document.getElementById('historyEmpty'),
+            btnClearHistory: document.getElementById('btnClearHistory')
+        };
+
+        const state = {
+            lang: 'vi',
+            slots: {
+                1: { dataUrl: null, base64: null, mimeType: 'image/jpeg', name: '', role: 'Mặt trước (Front)' },
+                2: { dataUrl: null, base64: null, mimeType: 'image/jpeg', name: '', role: 'Mặt sau (Back)' }
+            },
+            category: 'Trang phục',
+            selectedPreset: 'hanger',
+            viewMode: 'both',
+            aspectRatio: '9:16',
+            resultMode: 'single',
+            activeCompareSide: 1,
+            resultUrl: null,
+            videoUrl: null,
+            isGenerating: false,
+            isZoomed: false,
+            history: []
+        };
+
+        function t(key) {
+            return I18N[state.lang]?.[key] ?? I18N.vi[key] ?? key;
+        }
+
+        function getPromptLanguageInstruction() {
+            const map = {
+                vi: 'Vietnamese',
+                en: 'English',
+                zh: 'Simplified Chinese',
+                ru: 'Russian'
+            };
+            return map[state.lang] || 'Vietnamese';
+        }
+
+        function refreshIcons() {
+            if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                window.lucide.createIcons();
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            if (!els.toastContainer) return;
+            const colorMap = {
+                success: 'bg-emerald-950/95 border-emerald-500/40 text-emerald-200',
+                error: 'bg-rose-950/95 border-rose-500/40 text-rose-200',
+                info: 'bg-studio-850/95 border-indigo-500/40 text-zinc-100'
+            };
+            const toast = document.createElement('div');
+            toast.className = `px-3.5 py-2.5 rounded-xl border text-xs font-medium shadow-xl transition-all ${colorMap[type] || colorMap.info}`;
+            toast.textContent = message;
+            els.toastContainer.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+                setTimeout(() => toast.remove(), 250);
+            }, 3000);
+        }
+
+        async function fetchWithBackoff(url, payload, maxRetries = 3) {
+            let delay = 1000;
+            for (let attempt = 0; attempt <= maxRetries; attempt++) {
+                try {
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!res.ok) {
+                        if (res.status >= 400 && res.status < 500 && res.status !== 429) {
+                            throw new Error(`HTTP ${res.status}`);
+                        }
+                        throw new Error(`Retryable status ${res.status}`);
+                    }
+                    return await res.json();
+                } catch (err) {
+                    if (attempt === maxRetries) throw err;
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2;
+                }
+            }
+        }
+
+        // ==========================================
+        // 2. TẢI ẢNH LÊN & PHÂN TÍCH AI VISION
+        // ==========================================
+        function readFileToSlot(slotNum, file) {
+            if (!file || !file.type.startsWith('image/')) {
+                showToast(t('toastInvalidImage'), 'error');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const dataUrl = e.target.result;
+                const base64 = dataUrl.split(',')[1] || '';
+                state.slots[slotNum] = {
+                    dataUrl,
+                    base64,
+                    mimeType: file.type || 'image/jpeg',
+                    name: file.name,
+                    role: slotNum === 1 ? t('roleFront') : t('roleBack')
+                };
+                renderSlotsUI();
+                await analyzeUploadedGarments(false);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearSlot(slotNum) {
+            state.slots[slotNum] = { dataUrl: null, base64: null, mimeType: 'image/jpeg', name: '', role: t('roleAnalyzing') };
+            const input = slotNum === 1 ? els.fileInput1 : els.fileInput2;
+            if (input) input.value = '';
+            renderSlotsUI();
+            if (state.slots[1].dataUrl || state.slots[2].dataUrl) {
+                analyzeUploadedGarments(false);
+            } else {
+                state.category = t('catDefault');
+                els.detectedCategoryBadge.textContent = t('catDefault');
+                els.detectedSidesBadge.textContent = t('sidesDefault');
+                els.garmentDetailsMap.value = '';
+                syncFullPromptEditor();
+            }
+        }
+
+        function renderSlotsUI() {
+            [1, 2].forEach(num => {
+                const s = state.slots[num];
+                const emptyEl = num === 1 ? els.slotEmpty1 : els.slotEmpty2;
+                const previewEl = num === 1 ? els.slotPreview1 : els.slotPreview2;
+                const imgEl = num === 1 ? els.imgPreview1 : els.imgPreview2;
+                const badgeEl = num === 1 ? els.badgeRole1 : els.badgeRole2;
+                const nameEl = num === 1 ? els.fileName1 : els.fileName2;
+
+                if (s.dataUrl) {
+                    emptyEl.classList.add('hidden');
+                    previewEl.classList.remove('hidden');
+                    imgEl.src = s.dataUrl;
+                    nameEl.textContent = s.name || `anh-mau-${num}.jpg`;
+                    badgeEl.textContent = s.role;
+                } else {
+                    emptyEl.classList.remove('hidden');
+                    previewEl.classList.add('hidden');
+                    imgEl.src = '';
+                }
+            });
+            refreshIcons();
+        }
+
+        function inferHeuristicRoles() {
+            const has1 = Boolean(state.slots[1].dataUrl);
+            const has2 = Boolean(state.slots[2].dataUrl);
+            if (has1 && has2) {
+                state.slots[1].role = t('roleFront');
+                state.slots[2].role = t('roleBack');
+            } else if (has1) {
+                state.slots[1].role = t('roleFront');
+            } else if (has2) {
+                state.slots[2].role = t('roleBack');
+            }
+        }
+
+        async function analyzeUploadedGarments(showNotify = true) {
+            const activeSlots = [1, 2].filter(n => state.slots[n].base64);
+            if (!activeSlots.length) {
+                showToast(t('toastNeedImage'), 'error');
+                return;
+            }
+
+            inferHeuristicRoles();
+            renderSlotsUI();
+
+            els.btnScanGarment.disabled = true;
+            els.scanBtnText.textContent = t('scanningBtn');
+
+            try {
+                const apiKey = '';
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+                const parts = [
+                    {
+                        text: `Analyze the garment worn by the model(s) across the provided image(s).
+Return strict JSON (no markdown fences) with this exact structure:
+{
+  "category": "Shirt/Top" | "Pants" | "Jacket",
+  "slot1Role": "Front" | "Back" | "None",
+  "slot2Role": "Front" | "Back" | "None",
+  "detailsSummary": "Concise technical summary of garment type, colors, stripes/patterns, logos, buttons/zippers, pockets, fabric texture, and front/back markings."
+}`
+                    }
+                ];
+
+                activeSlots.forEach(num => {
+                    parts.push({ text: `Sample image #${num}:` });
+                    parts.push({
+                        inlineData: {
+                            mimeType: state.slots[num].mimeType,
+                            data: state.slots[num].base64
+                        }
+                    });
+                });
+
+                const resJson = await fetchWithBackoff(url, {
+                    contents: [{ role: 'user', parts }],
+                    generationConfig: {
+                        responseMimeType: 'application/json'
+                    }
+                });
+
+                const rawText = resJson?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                const parsed = JSON.parse(rawText);
+
+                if (parsed.category) {
+                    state.category = parsed.category;
+                }
+                if (state.slots[1].dataUrl && parsed.slot1Role && parsed.slot1Role !== 'None') {
+                    state.slots[1].role = parsed.slot1Role.toLowerCase().includes('back') ? t('roleBack') : t('roleFront');
+                }
+                if (state.slots[2].dataUrl && parsed.slot2Role && parsed.slot2Role !== 'None') {
+                    state.slots[2].role = parsed.slot2Role.toLowerCase().includes('back') ? t('roleBack') : t('roleFront');
+                }
+
+                if (state.slots[1].dataUrl && state.slots[2].dataUrl && state.slots[1].role === state.slots[2].role) {
+                    state.slots[2].role = state.slots[1].role === t('roleFront') ? t('roleBack') : t('roleFront');
+                }
+
+                renderSlotsUI();
+
+                els.detectedCategoryBadge.textContent = `${t('catPrefix')} ${state.category}`;
+                const roleLabels = activeSlots.map(n => `#${n}: ${state.slots[n].role}`).join(' • ');
+                els.detectedSidesBadge.textContent = `${t('sidesPrefix')} ${roleLabels}`;
+
+                if (parsed.detailsSummary) {
+                    els.garmentDetailsMap.value = parsed.detailsSummary;
+                }
+
+                syncFullPromptEditor();
+                if (showNotify) {
+                    showToast(`${state.category} (${roleLabels})`, 'success');
+                }
+            } catch (err) {
+                renderSlotsUI();
+                const roleLabels = activeSlots.map(n => `#${n}: ${state.slots[n].role}`).join(' • ');
+                els.detectedCategoryBadge.textContent = `${t('catPrefix')} ${state.category}`;
+                els.detectedSidesBadge.textContent = `${t('sidesPrefix')} ${roleLabels}`;
+                syncFullPromptEditor();
+                if (showNotify) {
+                    showToast(t('toastNeedImage'), 'info');
+                }
+            } finally {
+                els.btnScanGarment.disabled = false;
+                els.scanBtnText.textContent = t('scanBtn');
+            }
+        }
+
+        // ==========================================
+        // 3. XÂY DỰNG PROMPT & BẢO TOÀN CHI TIẾT GỐC
+        // ==========================================
+        function buildAutoPrompt(overridePreset = null) {
+            const presetKey = overridePreset || state.selectedPreset;
+            const lockEnabled = Boolean(els.fidelityLockToggle?.checked);
+            const detailsText = (els.garmentDetailsMap?.value || '').trim();
+            const customText = (els.userCustomPrompt?.value || '').trim();
+            const blendMode = els.promptBlendMode?.value || 'blend';
+
+            const activeSlots = [1, 2].filter(n => state.slots[n].dataUrl);
+            const sidesInfo = activeSlots.length
+                ? activeSlots.map(n => `Image #${n} (${state.slots[n].role})`).join(' and ')
+                : 'the uploaded model photo(s)';
+
+            const viewInstruction = {
+                both: 'Show both Front and Back views side-by-side cleanly in the scene.',
+                front: 'Focus on the Front view of the garment.',
+                back: 'Focus on the Back view of the garment.'
+            }[state.viewMode] || 'Show the garment cleanly.';
+
+            const presetPromptMap = {
+                hanger: 'Studio rack presentation: garment hung neatly on a natural wooden hanger (or clip hanger for pants) on a minimalist metal rack against a light textured wall with framed wall art and a small green plant in the lower corner, soft studio lighting.',
+                flatlay: 'Overhead 90-degree flat-lay photography: garment neatly laid flat centered on a round cream shag rug over warm light wood flooring, soft directional sunlight casting gentle window shadows.',
+                pure_white: 'Pure solid #FFFFFF white e-commerce background with zero props, no rug, no wall art, no plants, and clean natural soft contact shadow under the garment.',
+                custom: 'Custom studio scene tailored to the requested styling and lighting.'
+            };
+
+            let scenePart = presetPromptMap[presetKey] || presetPromptMap.hanger;
+            if (blendMode === 'override' && customText) {
+                scenePart = customText;
+            } else if (customText) {
+                scenePart = `${scenePart} Additional styling instructions: ${customText}`;
+            }
+
+            const fidelityPart = lockEnabled
+                ? `STRICT FIDELITY LOCK: Remove the human model completely while keeping 100% of every logo, brand mark, text print, stripe, collar/cuff trim, button/zipper, seam, and fabric texture from ${sidesInfo} completely unchanged and razor-sharp. Output language context: ${getPromptLanguageInstruction()}.`
+                : `Extract the garment from ${sidesInfo}, remove the human model cleanly, and render realistic fabric texture and garment fit.`;
+
+            const detailsPart = detailsText ? `Detected garment specifications: ${detailsText}.` : '';
+
+            return `${fidelityPart} ${detailsPart} ${viewInstruction} ${scenePart} Aspect ratio: ${state.aspectRatio}.`.trim();
+        }
+
+        function syncFullPromptEditor(force = false) {
+            if (!els.fullPromptEditor) return;
+            if (!force && els.useManualFullPrompt?.checked) return;
+            els.fullPromptEditor.value = buildAutoPrompt();
+        }
+
+        // ==========================================
+        // 4. TẠO ẢNH STUDIO AI & LỊCH SỬ
+        // ==========================================
+        function setGeneratingUI(busy, labelText = '') {
+            state.isGenerating = busy;
+            els.btnGenerate.disabled = busy;
+            els.btnGenerateDualSet.disabled = busy;
+            els.btnGenerateText.textContent = busy ? (labelText || t('generatingBtn')) : t('generateBtn');
+
+            if (busy) {
+                els.emptyResultState.classList.add('hidden');
+                els.viewSingle.classList.add('hidden');
+                els.viewCompare.classList.add('hidden');
+                els.viewSideBySide.classList.add('hidden');
+                els.loadingResultState.classList.remove('hidden');
+                if (labelText) els.loadingStepText.textContent = labelText;
+            } else {
+                els.loadingResultState.classList.add('hidden');
+            }
+        }
+
+        function renderResultStage() {
+            if (!state.resultUrl) {
+                els.emptyResultState.classList.remove('hidden');
+                els.viewSingle.classList.add('hidden');
+                els.viewCompare.classList.add('hidden');
+                els.viewSideBySide.classList.add('hidden');
+                els.resultActionsBar.classList.add('hidden');
+                return;
+            }
+
+            els.emptyResultState.classList.add('hidden');
+            els.resultActionsBar.classList.remove('hidden');
+
+            const activeRef = state.slots[state.activeCompareSide]?.dataUrl
+                || state.slots[1]?.dataUrl
+                || state.slots[2]?.dataUrl
+                || state.resultUrl;
+
+            els.resultImgSingle.src = state.resultUrl;
+            els.compareBeforeImg.src = activeRef;
+            els.compareAfterImg.src = state.resultUrl;
+            els.sideBeforeImg.src = activeRef;
+            els.sideAfterImg.src = state.resultUrl;
+
+            els.modeTabs.forEach(tab => {
+                const active = tab.dataset.mode === state.resultMode;
+                tab.className = active
+                    ? 'mode-tab py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition-colors cursor-pointer'
+                    : 'mode-tab py-1.5 rounded-lg text-xs font-medium text-zinc-300 hover:text-white transition-colors cursor-pointer';
+            });
+
+            els.viewSingle.classList.toggle('hidden', state.resultMode !== 'single');
+            els.viewCompare.classList.toggle('hidden', state.resultMode !== 'compare');
+            els.viewSideBySide.classList.toggle('hidden', state.resultMode !== 'sidebyside');
+            refreshIcons();
+        }
+
+        function addToHistory(dataUrl, label) {
+            state.history.unshift({
+                id: Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+                url: dataUrl,
+                label
+            });
+            renderHistory();
+        }
+
+        function renderHistory() {
+            if (!els.historyGrid) return;
+            els.historyGrid.innerHTML = '';
+            if (!state.history.length) {
+                const emptyDiv = document.createElement('div');
+                emptyDiv.className = 'col-span-full text-center py-6 text-xs text-zinc-500';
+                emptyDiv.textContent = 'Chưa có ảnh nào trong phiên này.';
+                els.historyGrid.appendChild(emptyDiv);
+                return;
+            }
+
+            state.history.forEach(item => {
+                const card = document.createElement('button');
+                card.type = 'button';
+                card.className = 'group relative rounded-xl overflow-hidden bg-studio-950 border border-studio-800 hover:border-indigo-500 aspect-[3/4] cursor-pointer';
+                card.innerHTML = `
+                    <img src="${item.url}" alt="${item.label}" class="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                    <span class="absolute bottom-1.5 left-1.5 right-1.5 px-1.5 py-0.5 rounded bg-zinc-950/80 text-[10px] text-zinc-200 truncate">${item.label}</span>
+                `;
+                card.addEventListener('click', () => {
+                    state.resultUrl = item.url;
+                    renderResultStage();
+                });
+                els.historyGrid.appendChild(card);
+            });
+        }
+
+        async function requestSingleStudioImage(promptText) {
+            const activeSlots = [1, 2].filter(n => state.slots[n].base64);
+            const parts = [{ text: promptText }];
+            activeSlots.forEach(num => {
+                parts.push({
+                    inlineData: {
+                        mimeType: state.slots[num].mimeType,
+                        data: state.slots[num].base64
+                    }
+                });
+            });
+
+            const apiKey = '';
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent?key=${apiKey}`;
+
+            const responseJson = await fetchWithBackoff(url, {
+                contents: [{ role: 'user', parts }],
+                generationConfig: {
+                    responseModalities: ['IMAGE'],
+                    imageConfig: { aspectRatio: state.aspectRatio }
+                }
+            });
+
+            const inlinePart = responseJson?.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
+            if (!inlinePart?.inlineData?.data) {
+                throw new Error('No image returned from Gemini');
+            }
+            return `data:${inlinePart.inlineData.mimeType || 'image/png'};base64,${inlinePart.inlineData.data}`;
+        }
+
+        async function handleGenerateImage(overridePreset = null) {
+            const hasAnySlot = Boolean(state.slots[1].dataUrl || state.slots[2].dataUrl);
+            if (!hasAnySlot) {
+                showToast(t('toastNeedImage'), 'error');
+                return;
+            }
+
+            const promptToSend = (els.useManualFullPrompt?.checked && els.fullPromptEditor?.value.trim())
+                ? els.fullPromptEditor.value.trim()
+                : buildAutoPrompt(overridePreset);
+
+            setGeneratingUI(true, t('generatingBtn'));
+            try {
+                const imgUrl = await requestSingleStudioImage(promptToSend);
+                state.resultUrl = imgUrl;
+                addToHistory(imgUrl, overridePreset || state.selectedPreset);
+                renderResultStage();
+                showToast('Đã tạo ảnh Studio thành công!', 'success');
+            } catch (err) {
+                showToast(`Lỗi tạo ảnh: ${err.message || 'Không thể kết nối AI'}`, 'error');
+                renderResultStage();
+            } finally {
+                setGeneratingUI(false);
+            }
+        }
+
+        async function handleGenerateDualCombo() {
+            const hasAnySlot = Boolean(state.slots[1].dataUrl || state.slots[2].dataUrl);
+            if (!hasAnySlot) {
+                showToast(t('toastNeedImage'), 'error');
+                return;
+            }
+
+            setGeneratingUI(true, t('comboGeneratingBtn'));
+            try {
+                const hangerPrompt = buildAutoPrompt('hanger');
+                const flatlayPrompt = buildAutoPrompt('flatlay');
+
+                const hangerUrl = await requestSingleStudioImage(hangerPrompt);
+                addToHistory(hangerUrl, 'Hanger');
+
+                const flatlayUrl = await requestSingleStudioImage(flatlayPrompt);
+                addToHistory(flatlayUrl, 'Flat-lay');
+
+                state.resultUrl = flatlayUrl;
+                renderResultStage();
+                showToast('Đã tạo xong Combo Treo Móc + Trải Sàn!', 'success');
+            } catch (err) {
+                showToast(`Lỗi tạo Combo: ${err.message || 'Thử lại sau'}`, 'error');
+                renderResultStage();
+            } finally {
+                setGeneratingUI(false);
+            }
+        }
+
+        // ==========================================
+        // 5. TẠO VIDEO STUDIO TỪ ẢNH KẾT QUẢ
+        // ==========================================
+        async function handleCreateVideo() {
+            const sources = state.history.length > 0 && els.videoMotionStyle.value === 'showcase'
+                ? state.history.slice(0, 4).map(h => h.url)
+                : (state.resultUrl ? [state.resultUrl] : []);
+
+            if (!sources.length) {
+                showToast(t('emptyTitle'), 'error');
+                return;
+            }
+
+            const durationSec = parseInt(els.videoDurationSec.value, 10) || 8;
+            const motion = els.videoMotionStyle.value || 'zoompan';
+
+            els.btnGenerateVideo.disabled = true;
+            els.btnGenerateVideoText.textContent = t('genVideoBusy');
+
+            try {
+                const loadedImgs = await Promise.all(sources.map(src => new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous';
+                    img.onload = () => resolve(img);
+                    img.onerror = reject;
+                    img.src = src;
+                })));
+
+                const ratioParts = state.aspectRatio.split(':').map(Number);
+                const wRatio = ratioParts[0] || 9;
+                const hRatio = ratioParts[1] || 16;
+                const canvasW = 720;
+                const canvasH = Math.round((canvasW / wRatio) * hRatio);
+
+                const canvas = document.createElement('canvas');
+                canvas.width = canvasW;
+                canvas.height = canvasH;
+                const ctx = canvas.getContext('2d');
+
+                const mimeTypes = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'];
+                const chosenMime = mimeTypes.find(m => MediaRecorder.isTypeSupported(m)) || '';
+                const stream = canvas.captureStream(30);
+                const recorder = chosenMime ? new MediaRecorder(stream, { mimeType: chosenMime }) : new MediaRecorder(stream);
+
+                const chunks = [];
+                recorder.ondataavailable = e => {
+                    if (e.data && e.data.size > 0) chunks.push(e.data);
+                };
+
+                const recordingDone = new Promise(resolve => {
+                    recorder.onstop = () => {
+                        const blob = new Blob(chunks, { type: chosenMime || 'video/webm' });
+                        resolve(blob);
+                    };
+                });
+
+                recorder.start();
+
+                const startTime = performance.now();
+                const totalMs = durationSec * 1000;
+
+                await new Promise(resolve => {
+                    function drawFrame(now) {
+                        const elapsed = now - startTime;
+                        const progress = Math.min(1, elapsed / totalMs);
+
+                        ctx.fillStyle = '#090b10';
+                        ctx.fillRect(0, 0, canvasW, canvasH);
+
+                        const slideCount = loadedImgs.length;
+                        const slideIndex = Math.min(slideCount - 1, Math.floor(progress * slideCount));
+                        const img = loadedImgs[slideIndex];
+
+                        const scaleImg = Math.max(canvasW / img.width, canvasH / img.height);
+                        let zoom = 1.04 + progress * 0.08;
+                        let offsetX = 0;
+                        let offsetY = 0;
+
+                        if (motion === 'zoompan') {
+                            offsetX = Math.sin(progress * Math.PI * 2) * 18;
+                            offsetY = Math.cos(progress * Math.PI) * 14;
+                        } else if (motion === 'pulse') {
+                            zoom = 1.05 + Math.sin(progress * Math.PI * 4) * 0.025;
+                        }
+
+                        const drawW = img.width * scaleImg * zoom;
+                        const drawH = img.height * scaleImg * zoom;
+                        const dx = (canvasW - drawW) / 2 + offsetX;
+                        const dy = (canvasH - drawH) / 2 + offsetY;
+
+                        ctx.drawImage(img, dx, dy, drawW, drawH);
+
+                        if (motion === 'pulse') {
+                            const grad = ctx.createRadialGradient(canvasW * 0.5, canvasH * 0.4, 40, canvasW * 0.5, canvasH * 0.5, canvasW * 0.85);
+                            grad.addColorStop(0, 'rgba(255,255,255,0.08)');
+                            grad.addColorStop(1, 'rgba(0,0,0,0.28)');
+                            ctx.fillStyle = grad;
+                            ctx.fillRect(0, 0, canvasW, canvasH);
+                        }
+
+                        if (elapsed < totalMs) {
+                            requestAnimationFrame(drawFrame);
+                        } else {
+                            recorder.stop();
+                            resolve();
+                        }
+                    }
+                    requestAnimationFrame(drawFrame);
+                });
+
+                const videoBlob = await recordingDone;
+                if (state.videoUrl) URL.revokeObjectURL(state.videoUrl);
+                state.videoUrl = URL.createObjectURL(videoBlob);
+
+                els.resultVideoPlayer.src = state.videoUrl;
+                els.btnDownloadVideo.href = state.videoUrl;
+                els.btnDownloadVideo.classList.remove('hidden');
+                els.videoPlayerWrap.classList.remove('hidden');
+                showToast(t('toastVideoReady'), 'success');
+            } catch (err) {
+                showToast(`Lỗi tạo video: ${err.message || 'Trình duyệt không hỗ trợ ghi video'}`, 'error');
+            } finally {
+                els.btnGenerateVideo.disabled = false;
+                els.btnGenerateVideoText.textContent = t('genVideoBtn');
+            }
+        }
+
+        // ==========================================
+        // 6. ĐA NGÔN NGỮ & SỰ KIỆN GIAO DIỆN
+        // ==========================================
+        function applyLanguage(lang) {
+            state.lang = I18N[lang] ? lang : 'vi';
+            document.documentElement.lang = state.lang;
+            document.title = t('pageTitle');
+
+            els.langBtns.forEach(btn => {
+                const active = btn.dataset.lang === state.lang;
+                btn.className = active
+                    ? 'lang-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-indigo-600 text-white transition-colors cursor-pointer'
+                    : 'lang-btn px-2.5 py-1 rounded-lg text-[11px] font-medium text-zinc-300 hover:text-white transition-colors cursor-pointer';
+            });
+
+            const setText = (selector, text) => {
+                try {
+                    const el = document.querySelector(selector);
+                    if (el) el.textContent = text;
+                } catch {
+                    // Ignore invalid selector errors
+                }
+            };
+
+            setText('header h1', t('appTitle'));
+            setText('header h1 + span', t('appBadge'));
+            setText('header p', t('appSubtitle'));
+            if (els.demoSampleText) els.demoSampleText.textContent = t('demoSample');
+            if (els.btnResetAll) els.btnResetAll.title = t('resetTitle');
+
+            setText('main > div:first-child section:first-child h2', t('step1Title'));
+            setText('#btnSwapSides span', t('swapSides'));
+            setText('#slotEmpty1 span.text-xs', t('slot1Title'));
+            setText('#slotEmpty1 span.text-\\[11px\\]', t('slot1Sub'));
+            setText('#slotEmpty2 span.text-xs', t('slot2Title'));
+            setText('#slotEmpty2 span.text-\\[11px\\]', t('slot2Sub'));
+            setText('#slotPreview1 button[onclick*="fileInput1"]', t('changeBtn'));
+            setText('#slotPreview2 button[onclick*="fileInput2"]', t('changeBtn'));
+
+            const fidelityBox = els.fidelityLockToggle?.closest('.rounded-xl');
+            if (fidelityBox) {
+                const titleSpan = fidelityBox.querySelector('span.text-xs');
+                const descP = fidelityBox.querySelector('p');
+                if (titleSpan) titleSpan.textContent = t('fidelityTitle');
+                if (descP) descP.textContent = t('fidelityDesc');
+            }
+
+            const scanBox = els.btnScanGarment?.closest('.rounded-xl');
+            if (scanBox) {
+                const mapLabel = scanBox.querySelector('span.text-xs.font-semibold');
+                if (mapLabel) mapLabel.textContent = t('visionMapTitle');
+            }
+            if (els.scanBtnText) els.scanBtnText.textContent = t('scanBtn');
+            if (els.garmentDetailsMap) els.garmentDetailsMap.placeholder = t('detailsPlaceholder');
+
+            const card2 = document.querySelectorAll('main > div:first-child section')[1];
+            if (card2) {
+                const h2 = card2.querySelector('h2');
+                if (h2) h2.textContent = t('step2Title');
+                const hintSpan = h2?.parentElement?.nextElementSibling;
+                if (hintSpan) hintSpan.textContent = t('presetHint');
+            }
+
+            const hangerCard = document.querySelector('.preset-card[data-preset="hanger"]');
+            if (hangerCard) {
+                hangerCard.querySelector('span.text-xs').textContent = t('presetHangerTitle');
+                hangerCard.querySelector('.preset-badge').textContent = t('presetHangerBadge');
+                hangerCard.querySelector('p').textContent = t('presetHangerDesc');
+            }
+            const flatlayCard = document.querySelector('.preset-card[data-preset="flatlay"]');
+            if (flatlayCard) {
+                flatlayCard.querySelector('span.text-xs').textContent = t('presetFlatlayTitle');
+                flatlayCard.querySelector('.preset-badge').textContent = t('presetFlatlayBadge');
+                flatlayCard.querySelector('p').textContent = t('presetFlatlayDesc');
+            }
+            const whiteCard = document.querySelector('.preset-card[data-preset="pure_white"]');
+            if (whiteCard) {
+                whiteCard.querySelector('span.text-xs').textContent = t('presetWhiteTitle');
+                whiteCard.querySelector('.preset-badge').textContent = t('presetWhiteBadge');
+                whiteCard.querySelector('p').textContent = t('presetWhiteDesc');
+            }
+            const customCard = document.querySelector('.preset-card[data-preset="custom"]');
+            if (customCard) {
+                customCard.querySelector('span.text-xs').textContent = t('presetCustomTitle');
+                customCard.querySelector('.preset-badge').textContent = t('presetCustomBadge');
+                customCard.querySelector('p').textContent = t('presetCustomDesc');
+            }
+
+            const viewModeTitle = document.querySelector('#viewModeGroup')?.previousElementSibling;
+            if (viewModeTitle) viewModeTitle.textContent = t('viewModeLabel');
+            const viewModeMap = { both: t('viewBoth'), front: t('viewFront'), back: t('viewBack') };
+            els.viewModeBtns.forEach(btn => {
+                if (viewModeMap[btn.dataset.viewmode]) btn.textContent = viewModeMap[btn.dataset.viewmode];
+            });
+
+            setText('label[for="userCustomPrompt"] span', t('customPromptLabel'));
+            if (els.promptBlendMode) {
+                els.promptBlendMode.options[0].textContent = t('blendModeBlend');
+                els.promptBlendMode.options[1].textContent = t('blendModeOverride');
+            }
+            if (els.userCustomPrompt) els.userCustomPrompt.placeholder = t('customPromptPlaceholder');
+
+            const chipTexts = [t('chipConcrete'), t('chipHanger2'), t('chipFlatlay2'), t('chipCrisp')];
+            document.querySelectorAll('#promptQuickChips .chip-btn').forEach((btn, idx) => {
+                if (chipTexts[idx]) btn.textContent = chipTexts[idx];
+            });
+
+            setText('#btnToggleFullPrompt span', t('toggleFullPrompt'));
+            const manualCheckSpan = els.useManualFullPrompt?.nextElementSibling;
+            if (manualCheckSpan) manualCheckSpan.textContent = t('manualPromptCheckbox');
+            if (els.btnSyncFullPrompt) els.btnSyncFullPrompt.textContent = t('syncPromptBtn');
+
+            const ratioSection = els.aspectRatioGroup?.parentElement;
+            if (ratioSection) {
+                const ratioHeaderSpans = ratioSection.querySelectorAll('div:first-child span');
+                if (ratioHeaderSpans[0]) ratioHeaderSpans[0].textContent = t('ratioLabel');
+                if (ratioHeaderSpans[1]) ratioHeaderSpans[1].textContent = t('ratioHint');
+            }
+
+            if (els.btnGenerateText && !state.isGenerating) {
+                els.btnGenerateText.textContent = t('generateBtn');
+            }
+
+            setText('main > div:nth-child(2) section:first-child h2', t('resultTitle'));
+            if (els.zoomBtnText) els.zoomBtnText.textContent = state.isZoomed ? t('zoomOut') : t('zoomIn');
+            setText('#btnGenerateDualSet span', t('comboBtn'));
+
+            const tabMap = { single: t('tabSingle'), compare: t('tabCompare'), sidebyside: t('tabSideBySide') };
+            els.modeTabs.forEach(tab => {
+                if (tabMap[tab.dataset.mode]) tab.textContent = tabMap[tab.dataset.mode];
+            });
+
+            setText('#emptyResultState h3', t('emptyTitle'));
+            const emptyP = els.emptyResultState?.querySelector('p');
+            if (emptyP) {
+                emptyP.innerHTML = `${t('emptyDescBefore')}<strong class="text-amber-300">${t('emptyDescHighlight')}</strong>${t('emptyDescAfter')}<strong>${t('generateBtn')}</strong>.`;
+            }
+            if (els.loadingStepText && !state.isGenerating) els.loadingStepText.textContent = t('loadingDefault');
+            const loadingSub = els.loadingResultState?.querySelector('p.text-xs');
+            if (loadingSub) loadingSub.textContent = t('loadingSub');
+            if (els.zoomHintBadge) els.zoomHintBadge.textContent = t('zoomHint');
+
+            const compareSpans = els.viewCompare?.querySelectorAll('span');
+            if (compareSpans?.[0]) compareSpans[0].textContent = t('compareBefore');
+            if (compareSpans?.[1]) compareSpans[1].textContent = t('compareAfter');
+            setText('#viewSideBySide span', t('sideAfterLabel'));
+            if (els.videoMetaInfo && !state.videoUrl) els.videoMetaInfo.textContent = t('videoMetaDefault');
+
+            if (els.videoStudioBar) {
+                const vTitle = els.videoStudioBar.querySelector('span.text-xs.sm\\:text-sm');
+                const vBadge = els.videoStudioBar.querySelector('span.bg-violet-600');
+                const vDesc = els.videoStudioBar.querySelector('p.text-\\[11px\\]');
+                if (vTitle) vTitle.textContent = t('videoTitle');
+                if (vBadge) vBadge.textContent = t('videoBadge');
+                if (vDesc) vDesc.textContent = t('videoDesc');
+            }
+            if (els.videoMotionStyle) {
+                els.videoMotionStyle.options[0].textContent = t('motionZoomPan');
+                els.videoMotionStyle.options[1].textContent = t('motionShowcase');
+                els.videoMotionStyle.options[2].textContent = t('motionPulse');
+            }
+            if (els.videoDurationSec) {
+                els.videoDurationSec.options[0].textContent = t('dur5');
+                els.videoDurationSec.options[1].textContent = t('dur8');
+                els.videoDurationSec.options[2].textContent = t('dur12');
+            }
+            if (els.btnGenerateVideoText && !state.isGenerating) {
+                els.btnGenerateVideoText.textContent = t('genVideoBtn');
+            }
+
+            const refLabel = els.resultActionsBar?.querySelector('span.text-xs');
+            if (refLabel) refLabel.textContent = t('refSourceLabel');
+            els.sideBtns.forEach(btn => {
+                btn.textContent = btn.dataset.side === '1' ? t('side1Btn') : t('side2Btn');
+            });
+            setText('#btnCopyPrompt span', t('copyPromptBtn'));
+            setText('#btnDownloadPng span', t('downloadPngBtn'));
+            setText('#btnDownloadJpg span', t('downloadJpgBtn'));
+            setText('#btnDownloadVideo span', t('downloadVideoBtn'));
+
+            if (els.featureSuggestionsBox) {
+                const sugHeadSpan = els.featureSuggestionsBox.querySelector('span.text-xs.font-semibold');
+                if (sugHeadSpan) sugHeadSpan.textContent = t('suggestionsTitle');
+                setText('#btnCopyCaptionIdea span', t('insertIdeaBtn'));
+                const sugCards = els.featureSuggestionsBox.querySelectorAll('.chip-btn');
+                const sugData = [
+                    [t('sug1Title'), t('sug1Desc')],
+                    [t('sug2Title'), t('sug2Desc')],
+                    [t('sug3Title'), t('sug3Desc')]
+                ];
+                sugCards.forEach((card, idx) => {
+                    if (!sugData[idx]) return;
+                    const spans = card.querySelectorAll('span');
+                    if (spans[0]) spans[0].textContent = sugData[idx][0];
+                    if (spans[1]) spans[1].textContent = sugData[idx][1];
+                });
+            }
+
+            const histHeadSpans = els.historySection?.querySelectorAll('div:first-child span, div:first-child button');
+            if (histHeadSpans?.[0]) histHeadSpans[0].textContent = t('historyTitle');
+            if (els.btnClearHistory) els.btnClearHistory.textContent = t('clearHistoryBtn');
+
+            if (!state.slots[1].dataUrl && !state.slots[2].dataUrl) {
+                els.detectedCategoryBadge.textContent = t('catDefault');
+                els.detectedSidesBadge.textContent = t('sidesDefault');
+            } else {
+                const activeSlots = [1, 2].filter(n => state.slots[n].dataUrl);
+                els.detectedCategoryBadge.textContent = `${t('catPrefix')} ${state.category}`;
+                els.detectedSidesBadge.textContent = `${t('sidesPrefix')} ${activeSlots.map(n => `#${n}: ${state.slots[n].role}`).join(' • ')}`;
+            }
+
+            inferHeuristicRoles();
+            renderSlotsUI();
+            syncFullPromptEditor();
+            refreshIcons();
+        }
+
+        // Bind events
+        els.langBtns.forEach(btn => {
+            btn.addEventListener('click', () => applyLanguage(btn.dataset.lang));
+        });
+
+        els.fileInput1?.addEventListener('change', e => e.target.files?.[0] && readFileToSlot(1, e.target.files[0]));
+        els.fileInput2?.addEventListener('change', e => e.target.files?.[0] && readFileToSlot(2, e.target.files[0]));
+        els.btnRemove1?.addEventListener('click', () => clearSlot(1));
+        els.btnRemove2?.addEventListener('click', () => clearSlot(2));
+        els.btnScanGarment?.addEventListener('click', () => analyzeUploadedGarments(true));
+
+        els.btnSwapSides?.addEventListener('click', () => {
+            if (!state.slots[1].dataUrl && !state.slots[2].dataUrl) {
+                els.fileInput1?.click();
+                return;
+            }
+            const temp = { ...state.slots[1] };
+            state.slots[1] = { ...state.slots[2] };
+            state.slots[2] = temp;
+            inferHeuristicRoles();
+            renderSlotsUI();
+            syncFullPromptEditor();
+            showToast(t('toastSwapped'), 'info');
+        });
+
+        els.presetCards.forEach(card => {
+            card.addEventListener('click', () => {
+                state.selectedPreset = card.dataset.preset;
+                els.presetCards.forEach(c => {
+                    const isSelected = c.dataset.preset === state.selectedPreset;
+                    c.className = isSelected
+                        ? 'preset-card text-left rounded-xl p-3 bg-indigo-600/15 border-2 border-indigo-500 transition-all cursor-pointer'
+                        : 'preset-card text-left rounded-xl p-3 bg-studio-850 border border-studio-700 hover:border-studio-600 transition-all cursor-pointer';
+                });
+                syncFullPromptEditor();
+            });
+        });
+
+        els.viewModeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                state.viewMode = btn.dataset.viewmode;
+                els.viewModeBtns.forEach(b => {
+                    const active = b.dataset.viewmode === state.viewMode;
+                    b.className = active
+                        ? 'viewmode-btn px-2.5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white transition-colors cursor-pointer'
+                        : 'viewmode-btn px-2.5 py-2 rounded-xl text-xs font-medium bg-studio-850 text-zinc-300 border border-studio-700 hover:text-white transition-colors cursor-pointer';
+                });
+                syncFullPromptEditor();
+            });
+        });
+
+        els.ratioBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                state.aspectRatio = btn.dataset.ratio;
+                els.ratioBtns.forEach(b => {
+                    const active = b.dataset.ratio === state.aspectRatio;
+                    b.className = active
+                        ? 'ratio-btn py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white transition-colors cursor-pointer'
+                        : 'ratio-btn py-2 rounded-xl text-xs font-medium bg-studio-850 text-zinc-300 border border-studio-700 hover:text-white transition-colors cursor-pointer';
+                });
+                syncFullPromptEditor();
+            });
+        });
+
+        els.userCustomPrompt?.addEventListener('input', () => {
+            els.btnClearPrompt.classList.toggle('hidden', !els.userCustomPrompt.value.trim());
+            syncFullPromptEditor();
+        });
+
+        els.btnClearPrompt?.addEventListener('click', () => {
+            els.userCustomPrompt.value = '';
+            els.btnClearPrompt.classList.add('hidden');
+            syncFullPromptEditor();
+        });
+
+        els.promptBlendMode?.addEventListener('change', () => syncFullPromptEditor());
+        els.fidelityLockToggle?.addEventListener('change', () => syncFullPromptEditor());
+        els.garmentDetailsMap?.addEventListener('input', () => syncFullPromptEditor());
+
+        document.querySelectorAll('.chip-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const snippet = btn.dataset.snippet || '';
+                if (!snippet) return;
+                const cur = els.userCustomPrompt.value.trim();
+                els.userCustomPrompt.value = cur ? `${cur}, ${snippet}` : snippet;
+                els.btnClearPrompt.classList.remove('hidden');
+                syncFullPromptEditor();
+            });
+        });
+
+        els.btnCopyCaptionIdea?.addEventListener('click', () => {
+            const idea = t('ideaText');
+            const current = els.userCustomPrompt.value.trim();
+            if (!current.includes(idea)) {
+                els.userCustomPrompt.value = current ? `${current}. ${idea}` : idea;
+                els.btnClearPrompt.classList.remove('hidden');
+                syncFullPromptEditor();
+                showToast(t('toastIdeaAdded'), 'success');
+            }
+        });
+
+        els.btnToggleFullPrompt?.addEventListener('click', () => {
+            const isHidden = els.fullPromptPanel.classList.contains('hidden');
+            els.fullPromptPanel.classList.toggle('hidden', !isHidden);
+            els.chevronFullPrompt.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+            if (isHidden) syncFullPromptEditor();
+        });
+
+        els.btnSyncFullPrompt?.addEventListener('click', () => {
+            els.useManualFullPrompt.checked = false;
+            syncFullPromptEditor(true);
+        });
+
+        els.btnGenerate?.addEventListener('click', () => handleGenerateImage());
+        els.btnGenerateDualSet?.addEventListener('click', () => handleGenerateDualCombo());
+        els.btnGenerateVideo?.addEventListener('click', () => handleCreateVideo());
+
+        els.modeTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                state.resultMode = tab.dataset.mode;
+                renderResultStage();
+            });
+        });
+
+        els.sideBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                state.activeCompareSide = Number(btn.dataset.side) || 1;
+                els.sideBtns.forEach(b => {
+                    const active = Number(b.dataset.side) === state.activeCompareSide;
+                    b.className = active
+                        ? 'side-btn px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-600 text-white cursor-pointer'
+                        : 'side-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-studio-850 text-zinc-300 border border-studio-700 cursor-pointer';
+                });
+                renderResultStage();
+            });
+        });
+
+        els.compareRange?.addEventListener('input', e => {
+            const val = Number(e.target.value);
+            els.compareBeforeClip.style.width = `${val}%`;
+            els.compareDivider.style.left = `${val}%`;
+        });
+
+        function setZoom(zoomed) {
+            state.isZoomed = zoomed;
+            els.zoomBtnText.textContent = zoomed ? t('zoomOut') : t('zoomIn');
+            els.zoomHintBadge.classList.toggle('hidden', !zoomed);
+            if (!zoomed) {
+                els.resultImgSingle.style.transform = 'scale(1)';
+                els.resultImgSingle.style.transformOrigin = 'center center';
+            } else {
+                els.resultImgSingle.style.transform = 'scale(2.1)';
+            }
+        }
+
+        els.btnToggleZoom?.addEventListener('click', () => setZoom(!state.isZoomed));
+        els.resultImgSingle?.addEventListener('click', () => setZoom(!state.isZoomed));
+        els.resultImgSingle?.addEventListener('mousemove', e => {
+            if (!state.isZoomed) return;
+            const rect = els.resultImgSingle.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+            els.resultImgSingle.style.transformOrigin = `${x}% ${y}%`;
+        });
+
+        els.btnCopyPrompt?.addEventListener('click', () => {
+            const text = els.fullPromptEditor.value || buildAutoPrompt();
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            showToast(t('toastCopied'), 'success');
+        });
+
+        function downloadResultAs(format) {
+            if (!state.resultUrl) return;
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => {
+                const c = document.createElement('canvas');
+                c.width = img.naturalWidth;
+                c.height = img.naturalHeight;
+                const ctx = c.getContext('2d');
+                if (format === 'jpeg') {
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, c.width, c.height);
+                }
+                ctx.drawImage(img, 0, 0);
+                const a = document.createElement('a');
+                a.href = c.toDataURL(`image/${format}`, 0.95);
+                a.download = `ai-fashion-studio.${format === 'jpeg' ? 'jpg' : 'png'}`;
+                a.click();
+            };
+            img.src = state.resultUrl;
+        }
+
+        els.btnDownloadPng?.addEventListener('click', () => downloadResultAs('png'));
+        els.btnDownloadJpg?.addEventListener('click', () => downloadResultAs('jpeg'));
+
+        els.btnClearHistory?.addEventListener('click', () => {
+            state.history = [];
+            renderHistory();
+        });
+
+        els.btnDemoSample?.addEventListener('click', () => {
+            const drawSample = (isBack) => {
+                const c = document.createElement('canvas');
+                c.width = 600;
+                c.height = 800;
+                const ctx = c.getContext('2d');
+                ctx.fillStyle = '#e7e5e4';
+                ctx.fillRect(0, 0, 600, 800);
+                ctx.fillStyle = '#f5f5f4';
+                ctx.beginPath();
+                ctx.roundRect(140, 190, 320, 390, 28);
+                ctx.fill();
+                ctx.fillStyle = '#334155';
+                for (let y = 260; y <= 500; y += 36) {
+                    ctx.fillRect(150, y, 300, 8);
+                }
+                ctx.fillStyle = '#18181b';
+                ctx.font = 'bold 20px Inter, sans-serif';
+                ctx.fillText(isBack ? 'SAMPLE BACK' : 'SAMPLE FRONT', 225, 150);
+                const dataUrl = c.toDataURL('image/jpeg', 0.9);
+                return {
+                    dataUrl,
+                    base64: dataUrl.split(',')[1],
+                    mimeType: 'image/jpeg',
+                    name: isBack ? 'sample-back.jpg' : 'sample-front.jpg',
+                    role: isBack ? t('roleBack') : t('roleFront')
+                };
+            };
+
+            state.slots[1] = drawSample(false);
+            state.slots[2] = drawSample(true);
+            state.category = 'Shirt/Top';
+            els.detectedCategoryBadge.textContent = `${t('catPrefix')} ${state.category}`;
+            els.detectedSidesBadge.textContent = `${t('sidesPrefix')} #1: ${state.slots[1].role} • #2: ${state.slots[2].role}`;
+            els.garmentDetailsMap.value = t('demoDetails');
+            renderSlotsUI();
+            syncFullPromptEditor(true);
+            showToast(t('demoLoaded'), 'success');
+        });
+
+        els.btnResetAll?.addEventListener('click', () => {
+            clearSlot(1);
+            clearSlot(2);
+            state.resultUrl = null;
+            state.isZoomed = false;
+            els.userCustomPrompt.value = '';
+            els.btnClearPrompt.classList.add('hidden');
+            els.videoPlayerWrap.classList.add('hidden');
+            els.btnDownloadVideo.classList.add('hidden');
+            setZoom(false);
+            renderResultStage();
+            syncFullPromptEditor(true);
+            showToast(t('toastReset'), 'info');
+        });
+
+        // Khởi tạo ban đầu
+        applyLanguage('vi');
+        syncFullPromptEditor(true);
+        renderResultStage();
+        renderHistory();
+        refreshIcons();
+    </script>
+</body>
+</html>
